@@ -1,2 +1,2 @@
 # City-Builder
-A browser-based city builder game
+A browser-based city builder game.
