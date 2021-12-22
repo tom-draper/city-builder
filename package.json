@@ -1,0 +1,22 @@
+{
+  "name": "city-builder",
+  "version": "1.0.0",
+  "description": "A browser-based city builder game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tom-Draper/City-Builder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tom-Draper/City-Builder/issues"
+  },
+  "homepage": "https://github.com/Tom-Draper/City-Builder#readme",
+  "dependencies": {
+    "stage-js": "^0.9.4"
+  }
+}

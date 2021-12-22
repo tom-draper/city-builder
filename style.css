@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: repeat(120, max-content);
+}
+
+.cell {
+    height: 8px;
+    width: 8px;
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.cell:hover {
+    background-color: rgb(233, 231, 223);
+}
+.neutral {
+    background-color: rgb(255, 253, 245);
+}
+.road {
+    background-color: rgb(75, 75, 75);
+}
+.field {
+    background-color: rgb(123, 219, 111);
+}
+.hedge {
+    background-color: green;
+}
+.lake {
+    background-color: rgb(32, 174, 250);
+}
