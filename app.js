@@ -78,6 +78,8 @@ function setCurrentObj(obj) {
   document.getElementById('hedgeBtn').classList.remove('active');
   document.getElementById('fenceBtn').classList.remove('active');
   document.getElementById('houseBtn').classList.remove('active');
+  document.getElementById('supermarketBtn').classList.remove('active');
+  document.getElementById('farmBtn').classList.remove('active');
   document.getElementById('neutralBtn').classList.remove('active');
   document.getElementById(obj + 'Btn').classList.add('active');
   currentObj = obj;
@@ -165,14 +167,14 @@ function driveLocations() {
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
       if (grid[i][j].className == "cell road") {
-        if (neighbourIs(i, j, 'supermarket')) {
-          // Give x6 greater weight to supermarket locations
-          locations.push([i, j], [i, j], [i, j], [i, j], [i, j], [i, j]);
+        if (i == 0 || j == 0 || i == h-1 || j == w-1 || neighbourIs(i, j, 'farm')) {
+          locations.push([i, j]);
         } else if (neighbourIs(i, j, 'house')) {
           // Give x2 greater weight to house locations
           locations.push([i, j], [i, j]);
-        } else if (i == 0 || j == 0 || i == h-1 || j == w-1 || neighbourIs(i, j, 'farm')) {
-          locations.push([i, j]);
+        } else if (neighbourIs(i, j, 'supermarket')) {
+          // Give x6 greater weight to supermarket locations
+          locations.push([i, j], [i, j], [i, j], [i, j], [i, j], [i, j]);
         } 
       }
     }
@@ -288,7 +290,7 @@ function tryCarDrive() {
   }
 
   // The more possible starting locations, the more frequently cars spawn
-  let waitTime =  120_000 - (startLocations.length*1000)
+  let waitTime =  30000 - (startLocations.length*1000)
   setTimeout(tryCarDrive, waitTime);
 }
 
@@ -303,4 +305,4 @@ var waterPlaced = false;
 var grid = createGrid();
 
 setTimeout(updateWater, 2000);
-setTimeout(tryCarDrive, 30000);
+setTimeout(tryCarDrive, 10000);

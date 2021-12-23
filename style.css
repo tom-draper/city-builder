@@ -16,6 +16,8 @@ body {
     display: grid;
     grid-template-columns: repeat(180, max-content);
     margin-bottom: 50px; /* toolbar height */
+    place-content: center;
+    margin-top: 30px;
 }
 
 .toolbar {
@@ -144,11 +146,8 @@ button {
     background-color: rgb(212, 214, 37) !important;
 }
 .car-5 {
-    background-color: #0666b5 !important;
+    background-color: #1084e2 !important;
 }
-/* .car-6 {
-    background-color: #53565A !important;
-} */
 
 .house {
     background-color: rgb(80, 26, 26);
