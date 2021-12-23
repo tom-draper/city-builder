@@ -37,7 +37,7 @@ async function applyObj(x, y) {
 async function fill(cell) {
   let x = cell.x;
   let y = cell.y;
-  if (cell.className == 'cell neutral' && x < w && y < h && x >= 0 && y >= 0) {
+  if (cell.className == 'cell neutral' && onGrid(x, y)) {
     await applyObj(y, x)
     if (y < h-1) {
       await fill(grid[y+1][x])
@@ -219,31 +219,56 @@ function getNeighbours(x, y, cost) {
 }
 
 function neighbourIsRoad(neighbour) {
-  let [x, y, cost] = neighbour;
+  let [x, y, _] = neighbour;
   return grid[x][y].className == "cell road"
 }
 
+function indexOfNode(arr, value) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][0] == value[0] && arr[i][1] == value[1] && arr[i][2] == value[2]) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function removeNode(arr, node) {
+  let index = indexOfNode(arr, node);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+
+function onGrid(x, y) {
+  return x >= 0 && y >= 0 && x < w && y < h
+}
+
 function findPath(sx, sy, fx, fy) {
-  let save = [{"parent": null, "child": [sx, sy]}, 0, 0, 0]
+  let save = [{"to": [sx, sy], "from": null}, 0, 0, 0]
   let path = []
   let toCheck = [[sx, sy, 0]];
   let checked = [];
+
   while (toCheck.length > 0) {
     let [x, y, g, h, f] = lowestF(toCheck, fx, fy)
+
     if (x == fx && y == fy) {
-      return path;
+      return save[0];
     } else {
       checked.push([x, y, g])
-      toCheck.remove([x, y, g])
+      toCheck = removeNode(toCheck, [x, y, g])
+
       let neighbours = getNeighbours(x, y, g);
       neighbours.forEach(neigh => {
-        if (neighbourIsRoad) {
+        if (onGrid(neigh[0], neigh[1]) && neighbourIsRoad(neigh)) {
           if (!toCheck.includes(neigh)) {
-            let path = {"parent": [x, y], "child": save[0]}
+            let path = {"to": [x, y], "from": save[0]}
             save = [path, g, h, f]
             toCheck.push(neigh);
           }
-          if (!toCheck.includes(neigh) && g < save[2]) {
+          if (toCheck.includes(neigh) && g < save[1]) {
+            let path = {"to": [x, y], "from": save[0]}
             save = [path, g, save[3], f]
           }
         }
@@ -266,9 +291,8 @@ function tryCarDrive() {
     let [fx, fy] = selectRandLocation(finishLocations)
 
     if (fx != null && fy != null) {
-      let path = findPath(sx, sy, fx, fy) {
-
-      }
+      let path = findPath(sx, sy, fx, fy);
+      console.log(path);
       carDrive(path);
     }
   }
