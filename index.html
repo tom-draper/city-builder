@@ -12,12 +12,12 @@
     
     <div class="toolbar">
       <div class="buttons">
-        <button onclick="setCurrentObj('road')">Road</button>
-        <button onclick="setCurrentObj('grass')">Grass</button>
-        <button onclick="setCurrentObj('hedge')">Hedge</button>
-        <button onclick="setCurrentObj('water')">Water</button>
+        <button class="active" id='roadBtn' onclick="setCurrentObj('road')">Road</button>
+        <button id='grassBtn' onclick="setCurrentObj('grass')">Grass</button>
+        <button id='hedgeBtn' onclick="setCurrentObj('hedge')">Hedge</button>
+        <button id='waterBtn' onclick="setCurrentObj('water')">Water</button>
 
-        <button onclick="toggleFill()">Fill</button>
+        <button id="fillBtn" onclick="toggleFill()">Fill</button>
       </div>
       <div class="settings">
         <button>Donate</button>

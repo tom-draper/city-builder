@@ -71,11 +71,19 @@ function turnCellToObj(cell) {
 }
 
 function setCurrentObj(obj) {
+  document.getElementById('roadBtn').classList.remove('active');
+  document.getElementById('waterBtn').classList.remove('active');
+  document.getElementById('grassBtn').classList.remove('active');
+  document.getElementById('hedgeBtn').classList.remove('active');
+
+  document.getElementById(obj + 'Btn').classList.add('active');
+
   currentObj = obj;
 }
 
 function toggleFill() {
   fillMode = !fillMode;
+  document.getElementById('fillBtn').classList.toggle('active');
 }
 
 function createArray(length) {

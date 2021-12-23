@@ -39,6 +39,10 @@ button {
     margin: 5px;
 }
 
+.active {
+    background-color: #ff4747;   
+}
+
 .cell {
     height: 8px;
     width: 8px;
