@@ -10,12 +10,18 @@
 <body>
   <div id="main">
     <div class="toolbar">
-      <div class="buttons">
+      <div class="objects">
         <button class="active" id='roadBtn' onclick="setCurrentObj('road')">Road</button>
         <button id='grassBtn' onclick="setCurrentObj('grass')">Grass</button>
         <button id='hedgeBtn' onclick="setCurrentObj('hedge')">Hedge</button>
+        <button id='fenceBtn' onclick="setCurrentObj('fence')">Fence</button>
         <button id='waterBtn' onclick="setCurrentObj('water')">Water</button>
-
+        <button id='houseBtn' onclick="setCurrentObj('house')">House</button>
+        <button id='farmBtn' onclick="setCurrentObj('farm')">Farm</button>
+        <button id='supermarketBtn' onclick="setCurrentObj('supermarket')">Supermarket</button>
+      </div>
+      <div class="tools">
+        <button id='neutralBtn' onclick="setCurrentObj('neutral')">Eraser</button>
         <button id="fillBtn" onclick="toggleFill()">Fill</button>
       </div>
       <div class="settings">

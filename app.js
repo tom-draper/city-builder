@@ -59,7 +59,7 @@ async function fill(cell) {
 
 async function turnCellToObj(cell) {
   if (fillMode && (currentObj == 'grass' || currentObj == 'water')) {
-    fill(cell)
+    fill(cell);
   } else {
     [objWidth, objHeight] = objSize(currentObj);
     for (let i = 0; i < objHeight; i++) {
@@ -76,6 +76,9 @@ function setCurrentObj(obj) {
   document.getElementById('waterBtn').classList.remove('active');
   document.getElementById('grassBtn').classList.remove('active');
   document.getElementById('hedgeBtn').classList.remove('active');
+  document.getElementById('fenceBtn').classList.remove('active');
+  document.getElementById('houseBtn').classList.remove('active');
+  document.getElementById('neutralBtn').classList.remove('active');
   document.getElementById(obj + 'Btn').classList.add('active');
   currentObj = obj;
 }
@@ -162,9 +165,15 @@ function driveLocations() {
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
       if (grid[i][j].className == "cell road") {
-        if (i == 0 || j == 0 || i == h-1 || j == w-1 || neighbourIs(i, j, 'house') || neighbourIs(i, j, 'supermarket')) {
+        if (neighbourIs(i, j, 'supermarket')) {
+          // Give x6 greater weight to supermarket locations
+          locations.push([i, j], [i, j], [i, j], [i, j], [i, j], [i, j]);
+        } else if (neighbourIs(i, j, 'house')) {
+          // Give x2 greater weight to house locations
+          locations.push([i, j], [i, j]);
+        } else if (i == 0 || j == 0 || i == h-1 || j == w-1 || neighbourIs(i, j, 'farm')) {
           locations.push([i, j]);
-        }
+        } 
       }
     }
   }
@@ -236,7 +245,7 @@ function carDrive(current, prev, step, path, carClass) {
   
     setTimeout(function() {
       carDrive(next, current, step+1, path, carClass);
-    }, 500);
+    }, 300);
   } 
   else {
     let [px, py] = prev;
@@ -278,7 +287,9 @@ function tryCarDrive() {
     }
   }
 
-  setTimeout(tryCarDrive, 30000);
+  // The more possible starting locations, the more frequently cars spawn
+  let waitTime =  120_000 - (startLocations.length*1000)
+  setTimeout(tryCarDrive, waitTime);
 }
 
 
