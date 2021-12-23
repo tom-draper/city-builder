@@ -30,6 +30,8 @@ async function applyObj(x, y) {
     }
   } else if (currentObj == "grass") {
     objClass = "grass-" + rand1toN(5);
+  } else if (currentObj == "hedge") {
+    objClass = "hedge-" + rand1toN(3);
   }
 
   grid[x][y].className = "cell " + objClass;
@@ -216,16 +218,16 @@ function onGrid(x, y) {
 }
 
 
-function carDrive(current, prev, step, path) {
+function carDrive(current, prev, step, path, carClass) {
   if (prev != null) {
     // Remove car from prev
     let [px, py] = prev;
-    grid[px][py].classList.remove('car')
+    grid[px][py].classList.remove(carClass)
   }
 
   if (current != null) {
     let [cx, cy] = current;
-    grid[cx][cy].classList.add('car')
+    grid[cx][cy].classList.add(carClass)
   
     let next = null;
     if (step < path.length-1) {
@@ -233,11 +235,12 @@ function carDrive(current, prev, step, path) {
     }
   
     setTimeout(function() {
-      carDrive(next, current, step+1, path);
+      carDrive(next, current, step+1, path, carClass);
     }, 500);
-  } else {
+  } 
+  else {
     let [px, py] = prev;
-    grid[px][py].classList.remove('car')
+    grid[px][py].classList.remove(carClass)
   }
 }
 
@@ -269,11 +272,13 @@ function tryCarDrive() {
       let start = graph.grid[sx][sy];
       let finish = graph.grid[fx][fy];
       let path = astar.search(graph, start, finish);
-      carDrive([sx, sy], null, 0, path);
+      if (path.length > 0) {
+        carDrive([sx, sy], null, 0, path, 'car-' + rand1toN(5));
+      }
     }
   }
 
-  setTimeout(tryCarDrive, 100000);
+  setTimeout(tryCarDrive, 10000);
 }
 
 
@@ -287,4 +292,4 @@ var waterPlaced = false;
 var grid = createGrid();
 
 setTimeout(updateWater, 2000);
-setTimeout(tryCarDrive, 5000);
+setTimeout(tryCarDrive, 10000);
