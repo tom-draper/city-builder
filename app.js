@@ -278,7 +278,7 @@ function tryCarDrive() {
     }
   }
 
-  setTimeout(tryCarDrive, 10000);
+  setTimeout(tryCarDrive, 30000);
 }
 
 
@@ -292,4 +292,4 @@ var waterPlaced = false;
 var grid = createGrid();
 
 setTimeout(updateWater, 2000);
-setTimeout(tryCarDrive, 10000);
+setTimeout(tryCarDrive, 30000);
