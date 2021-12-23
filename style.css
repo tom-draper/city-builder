@@ -89,3 +89,7 @@ button {
 .water-3 {
     background-color: var(--water-3);
 }
+
+.car {
+    background-color: red !important;
+}

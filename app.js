@@ -1,3 +1,4 @@
+
 async function turnDraggedCellToObj() {
   if (mouseDown) {
     await turnCellToObj(document.elementFromPoint(window.event.clientX, window.event.clientY));
@@ -192,36 +193,6 @@ function filterByDistance(startx, starty, locations, maxd) {
   return filteredLocs;
 }
 
-function calcf(x, y, cost, fx, fy) {
-  let h = distance(x, y, fx, fy)
-  let f = cost + h
-  return [f, cost, h]
-}
-
-function lowestF(toCheck, fx, fy) {
-  let lowest = 1000000;
-  toCheck.forEach(element => {
-    let [x, y, g] = element;
-    let h = distance(x, y, fx, fy)
-    let f = h + g;
-    if (f < lowest) {
-      lowest = [x, y, g, h, f];
-    }
-  })
-  return lowest;
-}
-
-function getNeighbours(x, y, cost) {
-  return [[x+1, y, cost+1],
-          [x, y+1, cost+1],
-          [x-1, y, cost+1],
-          [x, y-1, cost+1]]
-}
-
-function neighbourIsRoad(neighbour) {
-  let [x, y, _] = neighbour;
-  return grid[x][y].className == "cell road"
-}
 
 function indexOfNode(arr, value) {
   for (let i = 0; i < arr.length; i++) {
@@ -244,42 +215,45 @@ function onGrid(x, y) {
   return x >= 0 && y >= 0 && x < w && y < h
 }
 
-function findPath(sx, sy, fx, fy) {
-  let save = [{"to": [sx, sy], "from": null}, 0, 0, 0]
-  let path = []
-  let toCheck = [[sx, sy, 0]];
-  let checked = [];
 
-  while (toCheck.length > 0) {
-    let [x, y, g, h, f] = lowestF(toCheck, fx, fy)
+function carDrive(current, prev, step, path) {
+  if (prev != null) {
+    // Remove car from prev
+    let [px, py] = prev;
+    grid[px][py].classList.remove('car')
+  }
 
-    if (x == fx && y == fy) {
-      return save[0];
-    } else {
-      checked.push([x, y, g])
-      toCheck = removeNode(toCheck, [x, y, g])
-
-      let neighbours = getNeighbours(x, y, g);
-      neighbours.forEach(neigh => {
-        if (onGrid(neigh[0], neigh[1]) && neighbourIsRoad(neigh)) {
-          if (!toCheck.includes(neigh)) {
-            let path = {"to": [x, y], "from": save[0]}
-            save = [path, g, h, f]
-            toCheck.push(neigh);
-          }
-          if (toCheck.includes(neigh) && g < save[1]) {
-            let path = {"to": [x, y], "from": save[0]}
-            save = [path, g, save[3], f]
-          }
-        }
-      })
-
+  if (current != null) {
+    let [cx, cy] = current;
+    grid[cx][cy].classList.add('car')
+  
+    let next = null;
+    if (step < path.length-1) {
+      next = [path[step+1].x, path[step+1].y]
     }
+  
+    setTimeout(function() {
+      carDrive(next, current, step+1, path);
+    }, 500);
+  } else {
+    let [px, py] = prev;
+    grid[px][py].classList.remove('car')
   }
 }
 
-function carDrive(path) {
-  console.log("car drive")
+function roadNetwork() {
+  let network = createArray(w, h);
+
+  for (let i = 0; i < h; i++) {
+    for (let j = 0; j < w; j++) {
+      if (grid[i][j].className == "cell road") {
+        network[i][j] = 1; 
+      } else {
+        network[i][j] = 0;
+      }
+    }
+  }
+  return network;
 }
 
 function tryCarDrive() {
@@ -291,14 +265,17 @@ function tryCarDrive() {
     let [fx, fy] = selectRandLocation(finishLocations)
 
     if (fx != null && fy != null) {
-      let path = findPath(sx, sy, fx, fy);
-      console.log(path);
-      carDrive(path);
+      let graph = new Graph(roadNetwork());
+      let start = graph.grid[sx][sy];
+      let finish = graph.grid[fx][fy];
+      let path = astar.search(graph, start, finish);
+      carDrive([sx, sy], null, 0, path);
     }
   }
 
-  setTimeout(tryCarDrive, 5000);
+  setTimeout(tryCarDrive, 100000);
 }
+
 
 var w = 180;
 var h = 110;
