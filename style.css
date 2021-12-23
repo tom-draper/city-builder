@@ -53,9 +53,9 @@ button {
     -webkit-user-select: none;
     -ms-user-select: none;
 }
-.cell:hover {
+/* .cell:hover {
     opacity: 0.6;
-}
+} */
 .neutral {
     background-color: rgb(255, 253, 245);
 }
