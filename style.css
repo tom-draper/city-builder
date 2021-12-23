@@ -58,8 +58,20 @@ button {
 .road {
     background-color: rgb(75, 75, 75);
 }
-.grass {
+.grass-1 {
     background-color: rgb(123, 219, 111);
+}
+.grass-2 {
+    background-color: rgb(143, 226, 132);
+}
+.grass-3 {
+    background-color: rgb(102, 196, 89);
+}
+.grass-4 {
+    background-color: rgb(127, 211, 116);
+}
+.grass-5 {
+    background-color: rgb(113, 226, 98);
 }
 .hedge {
     background-color: green;
