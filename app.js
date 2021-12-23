@@ -2,9 +2,6 @@
 async function turnDraggedCellToObj() {
   if (mouseDown) {
     await turnCellToObj(document.elementFromPoint(window.event.clientX, window.event.clientY));
-    // if (window.event.clientX < 1 || window.event.clientY < 1 || window.event.clientX > (w*8)-1 || window.event.clientY > (h*8)-1) {
-    //   mouseDown = false;
-    // }
   }
 }
 
@@ -228,7 +225,6 @@ function onGrid(x, y) {
   return x >= 0 && y >= 0 && x < w && y < h
 }
 
-
 function carDrive(current, prev, step, path, carClass) {
   if (prev != null) {
     // Remove car from prev
@@ -290,7 +286,7 @@ function tryCarDrive() {
   }
 
   // The more possible starting locations, the more frequently cars spawn
-  let waitTime =  30000 - (startLocations.length*1000)
+  let waitTime =  120_000 - (startLocations.length*1000)
   setTimeout(tryCarDrive, waitTime);
 }
 
@@ -305,4 +301,4 @@ var waterPlaced = false;
 var grid = createGrid();
 
 setTimeout(updateWater, 2000);
-setTimeout(tryCarDrive, 10000);
+setTimeout(tryCarDrive, 60_000);
