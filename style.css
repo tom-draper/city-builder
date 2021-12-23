@@ -11,7 +11,8 @@ body {
 
 #main {
     display: grid;
-    grid-template-columns: repeat(220, max-content);
+    grid-template-columns: repeat(180, max-content);
+    margin-bottom: 50px; /* toolbar height */
 }
 
 .toolbar {
@@ -21,6 +22,21 @@ body {
     opacity: 0.8;
     bottom: 0;
     position: fixed;
+    display: flex;
+}
+.buttons {
+    display: flex;
+    flex-grow: 1;
+}
+.settings {
+    height: 50px;
+    margin-left: auto;
+    display: flex;
+}
+button {
+    min-width: 50px;
+    padding: 5px;
+    margin: 5px;
 }
 
 .cell {

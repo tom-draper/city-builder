@@ -27,10 +27,17 @@ function turnCellToObj(cell) {
     for (j = 0; j < w; j++) {
       if (obj == 'water') {
         obj = randWater()
+        if (!waterPlaced) {
+          waterPlaced = true;
+        }
       }
       grid[cell.y+i][cell.x+j].className = "cell " + obj
     }
   }
+}
+
+function setCurrentObj(obj) {
+  currentObj = obj;
 }
 
 function createArray(length) {
@@ -92,17 +99,20 @@ function randomBlue() {
 }
 
 function gameLoop() {
-  document.documentElement.style.setProperty('--water-1', randomBlue());
-  document.documentElement.style.setProperty('--water-2', randomBlue());
-  document.documentElement.style.setProperty('--water-3', randomBlue());
+  if (waterPlaced) {
+    document.documentElement.style.setProperty('--water-1', randomBlue());
+    document.documentElement.style.setProperty('--water-2', randomBlue());
+    document.documentElement.style.setProperty('--water-3', randomBlue());
+  }
 
   setTimeout(gameLoop, 2000);
 }
 
-var w = 220;
-var h = 115;
+var w = 180;
+var h = 110;
 var currentObj = 'water';
 var mouseDown = false;
+var waterPlaced = false;
 
 var grid = createGrid();
 
