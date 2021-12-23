@@ -192,31 +192,63 @@ function filterByDistance(startx, starty, locations, maxd) {
   return filteredLocs;
 }
 
-function f(x, y, cost, fx, fy) {
-  return cost + distance(x, y, fx, fy)
+function calcf(x, y, cost, fx, fy) {
+  let h = distance(x, y, fx, fy)
+  let f = cost + h
+  return [f, cost, h]
 }
 
 function lowestF(toCheck, fx, fy) {
   let lowest = 1000000;
   toCheck.forEach(element => {
-    let [x, y, cost] = element;
-    if (f(x, y, cost, fx, fy) < lowest) {
-      lowest = element;
+    let [x, y, g] = element;
+    let h = distance(x, y, fx, fy)
+    let f = h + g;
+    if (f < lowest) {
+      lowest = [x, y, g, h, f];
     }
   })
   return lowest;
 }
 
+function getNeighbours(x, y, cost) {
+  return [[x+1, y, cost+1],
+          [x, y+1, cost+1],
+          [x-1, y, cost+1],
+          [x, y-1, cost+1]]
+}
+
+function neighbourIsRoad(neighbour) {
+  let [x, y, cost] = neighbour;
+  return grid[x][y].className == "cell road"
+}
+
 function findPath(sx, sy, fx, fy) {
+  let save = [{"parent": null, "child": [sx, sy]}, 0, 0, 0]
   let path = []
   let toCheck = [[sx, sy, 0]];
   let checked = [];
   while (toCheck.length > 0) {
-    let [x, y, cost] = lowestF(toCheck, fx, fy)
+    let [x, y, g, h, f] = lowestF(toCheck, fx, fy)
     if (x == fx && y == fy) {
       return path;
     } else {
-      checked.push([x, y, cost])
+      checked.push([x, y, g])
+      toCheck.remove([x, y, g])
+      let neighbours = getNeighbours(x, y, g);
+      neighbours.forEach(neigh => {
+        if (neighbourIsRoad) {
+          if (!toCheck.includes(neigh)) {
+            let path = {"parent": [x, y], "child": save[0]}
+            save = [path, g, h, f]
+            toCheck.push(neigh);
+          }
+          if (!toCheck.includes(neigh) && g < save[2]) {
+            save = [path, g, save[3], f]
+          }
+        }
+      })
+
     }
   }
 }
