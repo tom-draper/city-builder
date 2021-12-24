@@ -148,6 +148,9 @@ button {
 .car-5 {
     background-color: #1b91ff !important;
 }
+.car-6 {
+    background-color: #002446 !important;
+}
 
 .house {
     background-color: rgb(80, 26, 26);
@@ -159,4 +162,36 @@ button {
 
 .farm {
     background-color: rgb(73, 56, 56);
+}
+
+.snow-1 {
+    background-color: #FFFAFA;
+}
+.snow-2 {
+    background-color: #E5ECF8;
+}
+.snow-3 {
+    background-color: #f0f0f0;
+}
+
+.forest-1 {
+    background-color: #014421;
+} 
+.forest-2 {
+    background-color: #0a2b1a;
+} 
+.forest-3 {
+    background-color: #65442E;
+} 
+.forest-4 {
+    background-color: #105230;
+} 
+.forest-5 {
+    background-color: #372113;
+} 
+.forest-6 {
+    background-color: #006E33;
+} 
+.forest-7 {
+    background-color: #5E503B;
 }
