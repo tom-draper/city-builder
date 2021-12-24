@@ -104,7 +104,7 @@ function createArray(length) {
 }
 
 function createGrid() {
-  let grid = createArray(w, h);
+  let grid = createArray(h, w);
 
   let container = document.getElementById("main");
   for (i = 0; i < h; i++) {
@@ -210,7 +210,7 @@ function distance(x1, y1, x2, y2) {
 function filterByDistance(startx, starty, locations, maxd) {
   let filteredLocations = [];
   locations.forEach((element) => {
-    [x, y] = element;
+    let [x, y] = element;
     if (distance(startx, starty, x, y) > maxd) {
       filteredLocations.push(element);
     }
@@ -251,7 +251,6 @@ function carDrive(current, prev, step, path, carClass) {
   }
 
   if (current != null) {
-    console.log(current);
     let [cx, cy] = current;
     grid[cx][cy].classList.add(carClass);
 
@@ -303,7 +302,6 @@ function tryCarDrive() {
         let start = graph.grid[sx][sy];
         let finish = graph.grid[fx][fy];
         let path = astar.search(graph, start, finish);
-        console.log(path);
         if (path.length > 0) {
           // If found a path that the car can take
           console.log('Car driving from (' + sx + ', ', + sy + ') to (' + fx + ', ', + fy + ')');
