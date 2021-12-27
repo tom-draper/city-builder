@@ -160,11 +160,23 @@ function updateWater() {
 
 function neighbourIs(x, y, obj) {
   let classN = "cell " + obj;
-  return (
-    grid[x+1][y].className == classN ||
-    grid[x][y+1].className == classN ||
-    grid[x-1][y].className == classN ||
-    grid[x][y-1].className == classN
+  let down = false;
+  let up = false;
+  let left = false;
+  let right = false;
+  if (x < w-1) {
+    down = grid[x+1][y].className == classN;
+  }
+  if (y < h-1) {
+    right = grid[x][y+1].className == classN;
+  }
+  if (x > 0) {
+    left = grid[x-1][y].className == classN;
+  }
+  if (y > 0) {
+    up = grid[x][y-1].className == classN;
+  }
+  return (up || down || left || right
   );
 }
 
@@ -327,7 +339,7 @@ function placeAnimalOverCell(x, y, animal, size) {
 }
 
 function farmLocation(x, y) {
-  return (grid[x][y].className.slice(0, 10) == "cell grass") && neighbourIs(x, y, "farm");
+  return cellIsGrass(x, y) && neighbourIs(x, y, "farm");
 }
 
 function farmLocations() {
@@ -344,9 +356,10 @@ function farmLocations() {
 }
 
 function spawnAnimals() {
-  if (0.1 >= Math.random()) {
+  if (0.01>= Math.random()) {
     let [x, y] = selectRandomLocation(farmLocations());
     if (x != null) {
+      console.log('Spawning animal at ', x, y);
       let animal = document.createElement("div");
       animal.classList = 'sheep';
       placeAnimalOverCell(x, y, animal, 5);
@@ -362,29 +375,49 @@ function coordsToCell(xCoord, yCoord) {
   return [Math.floor(xCoord/8), Math.floor(yCoord/8)];
 }
 
+function cellIsGrass(x, y) {
+  return grid[x][y].className.slice(0, 10) == "cell grass";
+}
+
 function moveAnimals() {
+  let movement = 3;
+  let buffer = 4;
+  let p = 1;
+
   animals.forEach(animal => {
-    if (0.1 >= Math.random()) {
+    if (p >= Math.random()) {
       let n = rand1toN(4);
       if (n == 1) {
-        let [x, y] = coordsToCell(animal.left, animal.top+3);
-        if (grid[x][y].cellName.slice(10) == "cell grass") {
-          animal.style.top = (animal.top + 1) + 'px';
+        let [x, y] = coordsToCell(animal.top+5+buffer, animal.left);
+        // console.log(x, y);
+        // console.log("attempting down");
+        if (cellIsGrass(x, y)) {
+          // console.log("moving animal down");
+          animal.style.top = (animal.top + movement) + 'px';
         }
       } else if (n == 2) {
-        let [x, y] = coordsToCell(animal.left, animal.top-3);
-        if (grid[x][y].cellName.slice(10) == "cell grass") {
-          animal.style.top = (animal.top - 1) + 'px';
+        let [x, y] = coordsToCell(animal.top-buffer, animal.left,);
+        // console.log(x, y);
+        // console.log("attempting up");
+        if (cellIsGrass(x, y)) {
+          // console.log("moving animal up");
+          animal.style.top = (animal.top - movement) + 'px';
         }
       } else if (n == 3) {
-        let [x, y] = coordsToCell(animal.left-3, animal.top);
-        if (grid[x][y].cellName.slice(10) == "cell grass") {
-          animal.style.left = (animal.left - 1) + 'px';
+        let [x, y] = coordsToCell(animal.top, animal.left-buffer, );
+        // console.log(x, y);
+        // console.log("attempting left");
+        if (cellIsGrass(x, y)) {
+          // console.log("moving animal left");
+          animal.style.left = (animal.left - movement) + 'px';
         }
       } else {
-        let [x, y] = coordsToCell(animal.left+3, animal.top);
-        if (grid[x][y].cellName.slice(10) == "cell grass") {
-          animal.style.left = (animal.left + 3) + 'px';
+        let [x, y] = coordsToCell(animal.top, animal.left+5+buffer);
+        // console.log(x, y);
+        // console.log("attempting right");
+        if (cellIsGrass(x, y)) {
+          // console.log("moving animal right");
+          animal.style.left = (animal.left + movement) + 'px';
         }      
       }
     }
@@ -406,5 +439,5 @@ var grid = createGrid();
 
 setTimeout(updateWater, 2000);
 setTimeout(tryCarDrive, 1000);
-setTimeout(spawnAnimals, 5000);
+setTimeout(spawnAnimals, 10000);
 setTimeout(moveAnimals, 1000);
