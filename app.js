@@ -356,7 +356,7 @@ function farmLocations() {
 }
 
 function spawnAnimals() {
-  if (0.05>= Math.random()) {
+  if (0.01>= Math.random()) {
     let [x, y] = selectRandomLocation(farmLocations());
     if (x != null) {
       console.log('Spawning animal at ', x, y);
@@ -431,7 +431,7 @@ function moveRight(animal, buffer, movement) {
 function moveAnimals() {
   let movement = 3;
   let buffer = 4;
-  let p = 1;
+  let p = 0.4;
 
   let nAnimals = animals.length;
   for (let i = 0; i < nAnimals; i++) {
