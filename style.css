@@ -24,12 +24,13 @@ body {
     place-content: center;
     margin: auto;
     position: relative;
+    box-shadow: 10px 10px 8px #888888;;
 }
 
 .toolbar {
     width: 100%;
     height: 50px;
-    background-color: rgb(107, 107, 107);
+    background-color: rgb(164, 164, 164);;
     opacity: 0.8;
     bottom: 0;
     position: fixed;
@@ -53,15 +54,15 @@ body {
 button {
     min-width: 60px;
     display:inline-block;
-    padding: 0 1.4em;
-    margin: 0.6em 0.35em;
+    padding: 0 1.1em;
+    margin: 0.5em 0.35em;
     border-radius: 0.15em;
     box-sizing: border-box;
     text-decoration: none;
     font-family: 'Roboto',sans-serif;
     font-family: 'Acme', sans-serif;
-    font-size: 14px;
-    text-transform: uppercase;
+    font-size: 16px;
+    /* text-transform: uppercase; */
     font-weight: 500;
     color: #FFFFFF;
     background-color:#3369ff;

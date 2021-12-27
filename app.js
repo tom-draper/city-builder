@@ -189,14 +189,15 @@ function driveLocations() {
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
       if (grid[i][j].className == "cell road") {
+        let location = [i, j];
         if (onEdge(i, j) || neighbourIs(i, j, "farm")) {
-          locations.push([i, j]);
+          locations.push(location);
         } else if (neighbourIs(i, j, "house")) {
           // Give x2 greater weight to house locations
-          locations.push([i, j], [i, j]);
+          locations.push(location, location);
         } else if (neighbourIs(i, j, "supermarket")) {
           // Give x4 greater weight to supermarket locations
-          locations.push([i, j], [i, j], [i, j], [i, j]);
+          locations.push(location, location, location, location);
         }
       }
     }
@@ -224,7 +225,7 @@ function filterByDistance(startx, starty, locations, maxd) {
   for (let i = 0; i < nLocations; i++) {
     let [x, y] = locations[i];
     if (distance(startx, starty, x, y) > maxd) {
-      filteredLocations.push(element);
+      filteredLocations.push(locations[i]);
     }
   }
   return filteredLocations;
@@ -294,7 +295,7 @@ function roadNetwork() {
 function tryCarDrive() {
   let startLocations = driveLocations();
 
-  let p = Math.min(startLocations.length*0.0001, 1);
+  let p = Math.min(startLocations.length*0.0002, 1);
   if (p >= Math.random()) {
     let [sx, sy] = selectRandomLocation(startLocations);
   
@@ -318,7 +319,7 @@ function tryCarDrive() {
     }
   }
 
-  setTimeout(tryCarDrive, 1000);
+  setTimeout(tryCarDrive, 500);
 }
 
 function cellToCoord(x, y) {
@@ -463,6 +464,6 @@ let animalBuffer = 6;
 let grid = createGrid();
 
 setTimeout(updateWater, 2000);
-setTimeout(tryCarDrive, 1000);
+setTimeout(tryCarDrive, 500);
 setTimeout(spawnAnimals, 10000);
 setTimeout(moveAnimals, 1000);
