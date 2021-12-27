@@ -356,7 +356,7 @@ function farmLocations() {
 }
 
 function spawnAnimals() {
-  if (0.01>= Math.random()) {
+  if (0.05>= Math.random()) {
     let [x, y] = selectRandomLocation(farmLocations());
     if (x != null) {
       console.log('Spawning animal at ', x, y);
@@ -368,7 +368,7 @@ function spawnAnimals() {
     }
   }
 
-  setTimeout(spawnAnimals, 1000);
+  setTimeout(spawnAnimals, animals.length*1000);
 }
 
 function coordsToCell(xCoord, yCoord) {
@@ -379,49 +379,83 @@ function cellIsGrass(x, y) {
   return grid[x][y].className.slice(0, 10) == "cell grass";
 }
 
+function moveUp(animal, buffer, movement) {
+  let [x, y] = coordsToCell(animal.top-buffer, animal.left);
+  // console.log(x, y);
+  // console.log("attempting up");
+  if (cellIsGrass(x, y)) {
+    // console.log("moving animal up");
+    animal.top = animal.top - movement;
+    animal.style.top = animal.top + 'px';
+    return true;
+  }
+  return false;
+}
+function moveDown(animal, buffer, movement) {
+  let [x, y] = coordsToCell(animal.top+5+buffer, animal.left);
+  // console.log(x, y);
+  // console.log("attempting down");
+  if (cellIsGrass(x, y)) {
+    // console.log("moving animal down");
+    animal.top = animal.top + movement;
+    animal.style.top = animal.top + 'px';
+    return true;
+  }
+  return false;
+}
+function moveLeft(animal, buffer, movement) {
+  let [x, y] = coordsToCell(animal.top, animal.left-buffer);
+  // console.log(x, y);
+  // console.log("attempting left");
+  if (cellIsGrass(x, y)) {
+    // console.log("moving animal left");
+    animal.left = animal.left - movement;
+    animal.style.left = animal.left + 'px';
+    return true;
+  }
+  return false;
+}
+function moveRight(animal, buffer, movement) {
+  let [x, y] = coordsToCell(animal.top, animal.left+5+buffer);
+  // console.log(x, y);
+  // console.log("attempting right");
+  if (cellIsGrass(x, y)) {
+    // console.log("moving animal right");
+    animal.left =  animal.left + movement;
+    animal.style.left = animal.left + 'px';
+    return true;
+  }
+  return false;
+}
+
 function moveAnimals() {
   let movement = 3;
   let buffer = 4;
   let p = 1;
 
-  animals.forEach(animal => {
+  let nAnimals = animals.length;
+  for (let i = 0; i < nAnimals; i++) {
     if (p >= Math.random()) {
       let n = rand1toN(4);
       if (n == 1) {
-        let [x, y] = coordsToCell(animal.top+5+buffer, animal.left);
-        // console.log(x, y);
-        // console.log("attempting down");
-        if (cellIsGrass(x, y)) {
-          // console.log("moving animal down");
-          animal.style.top = (animal.top + movement) + 'px';
+        if (!moveDown(animals[i], buffer, movement)) {
+          moveUp(animals[i], buffer, movement);
         }
       } else if (n == 2) {
-        let [x, y] = coordsToCell(animal.top-buffer, animal.left,);
-        // console.log(x, y);
-        // console.log("attempting up");
-        if (cellIsGrass(x, y)) {
-          // console.log("moving animal up");
-          animal.style.top = (animal.top - movement) + 'px';
+        if (!moveUp(animals[i], buffer, movement)) {
+          moveDown(animals[i], buffer, movement);
         }
       } else if (n == 3) {
-        let [x, y] = coordsToCell(animal.top, animal.left-buffer, );
-        // console.log(x, y);
-        // console.log("attempting left");
-        if (cellIsGrass(x, y)) {
-          // console.log("moving animal left");
-          animal.style.left = (animal.left - movement) + 'px';
+        if (!moveLeft(animals[i], buffer, movement)) {
+          moveRight(animals[i], buffer, movement);
         }
       } else {
-        let [x, y] = coordsToCell(animal.top, animal.left+5+buffer);
-        // console.log(x, y);
-        // console.log("attempting right");
-        if (cellIsGrass(x, y)) {
-          // console.log("moving animal right");
-          animal.style.left = (animal.left + movement) + 'px';
-        }      
+        if (!moveRight(animals[i], buffer, movement)) {
+          moveLeft(animals[i], buffer, movement);
+        }
       }
     }
-  });
+  }
   
   setTimeout(moveAnimals, 1000);
 }
