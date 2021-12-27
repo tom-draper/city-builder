@@ -28,7 +28,7 @@ async function applyObj(x, y) {
     }
   } else if (currentObj == "grass" || (currentObj == "forest")) {
     objClass = currentObj + "-" + rand1toN(5);
-  } else if (currentObj == "hedge" || currentObj == "snow") {
+  } else if (currentObj == "hedge") {
     objClass = currentObj + "-" + rand1toN(3);
   }
   
@@ -56,7 +56,7 @@ async function fill(cell) {
 }
 
 async function turnCellToObj(cell) {
-  if (fillMode && (currentObj == "grass" || currentObj == "water" || currentObj == "forest" || currentObj == "snow")) {
+  if (fillMode && (currentObj == "grass" || currentObj == "water" || currentObj == "forest")) {
     fill(cell);
   } else {
     let [objWidth, objHeight] = objSize(currentObj);
@@ -75,7 +75,6 @@ function setCurrentObj(obj) {
   document.getElementById("waterBtn").classList.remove("active");
   document.getElementById("grassBtn").classList.remove("active");
   document.getElementById("forestBtn").classList.remove("active");
-  document.getElementById("snowBtn").classList.remove("active");
   document.getElementById("hedgeBtn").classList.remove("active");
   document.getElementById("fenceBtn").classList.remove("active");
   document.getElementById("houseBtn").classList.remove("active");
@@ -106,7 +105,7 @@ function createArray(length) {
 function createGrid() {
   let grid = createArray(h, w);
 
-  let container = document.getElementById("main");
+  let container = document.getElementById("canvas");
   for (i = 0; i < h; i++) {
     for (j = 0; j < w; j++) {
       let cell = document.createElement("div");
@@ -178,8 +177,7 @@ function driveLocations() {
   for (let i = 0; i < h; i++) {
     for (let j = 0; j < w; j++) {
       if (grid[i][j].className == "cell road") {
-        if (onEdge(i, j) || neighbourIs(i, j, "farm")
-        ) {
+        if (onEdge(i, j) || neighbourIs(i, j, "farm")) {
           locations.push([i, j]);
         } else if (neighbourIs(i, j, "house")) {
           // Give x2 greater weight to house locations
@@ -314,14 +312,99 @@ function tryCarDrive() {
   setTimeout(tryCarDrive, 1000);
 }
 
+function cellToCoord(x, y) {
+  return [x * 8, y * 8];
+}
+
+function placeAnimalOverCell(x, y, animal, size) {
+  let [xCoord, yCoord] = cellToCoord(x, y);
+  animal.top = xCoord + Math.floor(Math.random() * 3);
+  animal.left = yCoord + Math.floor(Math.random() * 3);
+  // animal.top = xCoord;
+  // animal.left = yCoord;
+  animal.style.top = animal.top + 'px';
+  animal.style.left = animal.left + 'px';
+}
+
+function farmLocation(x, y) {
+  return (grid[x][y].className.slice(0, 10) == "cell grass") && neighbourIs(x, y, "farm");
+}
+
+function farmLocations() {
+  let locations = [];
+  for (let i = 0; i < h; i++) {
+    for (let j = 0; j < w; j++) {
+      if (farmLocation(i, j)) {
+        locations.push([i, j]);
+      }
+    }
+  }
+
+  return locations;
+}
+
+function spawnAnimals() {
+  if (0.1 >= Math.random()) {
+    let [x, y] = selectRandomLocation(farmLocations());
+    if (x != null) {
+      let animal = document.createElement("div");
+      animal.classList = 'sheep';
+      placeAnimalOverCell(x, y, animal, 5);
+      animals.push(animal);
+      document.getElementById('canvas').appendChild(animal);
+    }
+  }
+
+  setTimeout(spawnAnimals, 1000);
+}
+
+function coordsToCell(xCoord, yCoord) {
+  return [Math.floor(xCoord/8), Math.floor(yCoord/8)];
+}
+
+function moveAnimals() {
+  animals.forEach(animal => {
+    if (0.1 >= Math.random()) {
+      let n = rand1toN(4);
+      if (n == 1) {
+        let [x, y] = coordsToCell(animal.left, animal.top+3);
+        if (grid[x][y].cellName.slice(10) == "cell grass") {
+          animal.style.top = (animal.top + 1) + 'px';
+        }
+      } else if (n == 2) {
+        let [x, y] = coordsToCell(animal.left, animal.top-3);
+        if (grid[x][y].cellName.slice(10) == "cell grass") {
+          animal.style.top = (animal.top - 1) + 'px';
+        }
+      } else if (n == 3) {
+        let [x, y] = coordsToCell(animal.left-3, animal.top);
+        if (grid[x][y].cellName.slice(10) == "cell grass") {
+          animal.style.left = (animal.left - 1) + 'px';
+        }
+      } else {
+        let [x, y] = coordsToCell(animal.left+3, animal.top);
+        if (grid[x][y].cellName.slice(10) == "cell grass") {
+          animal.style.left = (animal.left + 3) + 'px';
+        }      
+      }
+    }
+  });
+  
+  setTimeout(moveAnimals, 1000);
+}
+
+
 var w = 180;
 var h = 110;
 var currentObj = "road";
 var mouseDown = false;
 var fillMode = false;
 var waterPlaced = false;
+var animals = [];
 
 var grid = createGrid();
 
 setTimeout(updateWater, 2000);
 setTimeout(tryCarDrive, 1000);
+setTimeout(spawnAnimals, 5000);
+setTimeout(moveAnimals, 1000);

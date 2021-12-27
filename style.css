@@ -13,11 +13,17 @@ body {
 }
 
 #main {
+    margin: 30px auto 50px auto; /* 50px toolbar height */
+    display: grid;
+}
+
+#canvas {
     display: grid;
     grid-template-columns: repeat(180, max-content);
-    margin-bottom: 50px; /* toolbar height */
+    width: max-content;
     place-content: center;
-    margin-top: 30px;
+    margin: auto;
+    position: relative;
 }
 
 .toolbar {
@@ -194,4 +200,13 @@ button {
 } 
 .forest-7 {
     background-color: #5E503B;
+}
+
+.sheep {
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    background-color: red;
+    z-index: 5;
+
 }
