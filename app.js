@@ -1,3 +1,4 @@
+
 async function turnDraggedCellToObj() {
   if (mouseDown) {
     await turnCellToObj(
@@ -139,7 +140,7 @@ function createGrid() {
   }
   document.getElementById("main").addEventListener(
     "mouseup",
-    () => {
+    function () {
       mouseDown = false;
     },
     false
@@ -181,20 +182,6 @@ function neighbourIs(x, y, obj) {
   return false;
 }
 
-// function variedNeighbourIs(x, y, obj, nSlice) {
-//   let classN = "cell " + obj;
-//   if (x < h - 1 && grid[x + 1][y].className.slice(0, nSlice) == classN) {
-//     return true;
-//   } else if (x > 0 && grid[x - 1][y].className.slice(0, nSlice) == classN) {
-//     return true;
-//   } else if (y < w - 1 && grid[x][y + 1].className.slice(0, nSlice) == classN) {
-//     return true;
-//   } else if (y > 0 && grid[x][y - 1].className.slice(0, nSlice) == classN) {
-//     return true;
-//   }
-//   return false;
-// }
-
 function onEdge(x, y) {
   return y == 0 || y == w - 1 || x == 0 || x == h - 1;
 }
@@ -203,7 +190,7 @@ function driveLocations() {
   let locations = [];
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (grid[y][x].className == "cell road") {
+      if (grid[y][x].cellType == "road") {
         let location = [x, y];
         if (onEdge(x, y) || neighbourIs(x, y, "farm")) {
           locations.push(location);
@@ -318,9 +305,7 @@ function tryCarDrive() {
 
     if (sx != null) {
       let finishLocations = driveLocations();
-      let [fx, fy] = selectRandomLocation(
-        filterByDistance(sx, sy, finishLocations, 10)
-      );
+      let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 10));
 
       if (fx != null) {
         let graph = new Graph(roadNetwork());
