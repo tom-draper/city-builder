@@ -51,6 +51,7 @@ body {
     margin-right: 8px;
 }
 
+#donate-btn,
 button {
     min-width: 60px;
     display:inline-block;
@@ -68,6 +69,10 @@ button {
     position: relative;
     border: none;
     border-radius: 3px;
+}
+#donate-btn {
+    display: grid;
+    place-items: center;
 }
 
 

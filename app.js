@@ -74,23 +74,23 @@ async function turnCellToObj(cell) {
 }
 
 function setCurrentObj(obj) {
-  document.getElementById("roadBtn").classList.remove("active");
-  document.getElementById("waterBtn").classList.remove("active");
-  document.getElementById("grassBtn").classList.remove("active");
-  document.getElementById("forestBtn").classList.remove("active");
-  document.getElementById("hedgeBtn").classList.remove("active");
-  document.getElementById("fenceBtn").classList.remove("active");
-  document.getElementById("houseBtn").classList.remove("active");
-  document.getElementById("supermarketBtn").classList.remove("active");
-  document.getElementById("farmBtn").classList.remove("active");
-  document.getElementById("neutralBtn").classList.remove("active");
-  document.getElementById(obj + "Btn").classList.add("active");
+  document.getElementById("road-btn").classList.remove("active");
+  document.getElementById("water-btn").classList.remove("active");
+  document.getElementById("grass-btn").classList.remove("active");
+  document.getElementById("forest-btn").classList.remove("active");
+  document.getElementById("hedge-btn").classList.remove("active");
+  document.getElementById("fence-btn").classList.remove("active");
+  document.getElementById("house-btn").classList.remove("active");
+  document.getElementById("supermarket-btn").classList.remove("active");
+  document.getElementById("farm-btn").classList.remove("active");
+  document.getElementById("neutral-btn").classList.remove("active");
+  document.getElementById(obj + "-btn").classList.add("active");
   currentObj = obj;
 }
 
 function toggleFill() {
   fillMode = !fillMode;
-  document.getElementById("fillBtn").classList.toggle("active");
+  document.getElementById("fill-btn").classList.toggle("active");
 }
 
 function createArray(length) {
