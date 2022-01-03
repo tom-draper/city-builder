@@ -33,38 +33,36 @@ async function applyObj(x, y) {
   }
 
   grid[y][x].className = "cell " + objClass;
+  grid[y][x].cellType = currentObj;
 }
 
-async function fill(cell) {
+async function fill(cell, cellType) {
   let x = cell.x;
   let y = cell.y;
-  if (cell.className == "cell neutral" && onGrid(x, y)) {
+  if (cell.cellType == cellType && onGrid(x, y)) {
     await applyObj(x, y);
     if (y < h - 1) {
-      await fill(grid[y + 1][x]);
+      await fill(grid[y + 1][x], cellType);
     }
     if (x < w - 1) {
-      await fill(grid[y][x + 1]);
+      await fill(grid[y][x + 1], cellType);
     }
     if (y > 0) {
-      await fill(grid[y - 1][x]);
+      await fill(grid[y - 1][x], cellType);
     }
     if (cell.x > 0) {
-      await fill(grid[y][x - 1]);
+      await fill(grid[y][x - 1], cellType);
     }
   }
 }
 
 async function turnCellToObj(cell) {
-  if (
-    fillMode &&
-    (currentObj == "grass" || currentObj == "water" || currentObj == "forest")
-  ) {
-    fill(cell);
+  if (fillMode) {
+    await fill(cell, cell.cellType);
   } else {
     let [objWidth, objHeight] = objSize(currentObj);
-    for (let x = 0; x < objHeight; x++) {
-      for (let y = 0; y < objWidth; y++) {
+    for (let y = 0; y < objHeight; y++) {
+      for (let x = 0; x < objWidth; x++) {
         if (onGrid(cell.x + x, cell.y + y)) {
           await applyObj(cell.x + x, cell.y + y);
         }
@@ -77,6 +75,7 @@ function setCurrentObj(obj) {
   document.getElementById("road-btn").classList.remove("active");
   document.getElementById("water-btn").classList.remove("active");
   document.getElementById("grass-btn").classList.remove("active");
+  document.getElementById("sand-btn").classList.remove("active");
   document.getElementById("forest-btn").classList.remove("active");
   document.getElementById("hedge-btn").classList.remove("active");
   document.getElementById("fence-btn").classList.remove("active");
@@ -109,12 +108,13 @@ function createGrid() {
   let grid = createArray(h, w);
 
   let container = document.getElementById("canvas");
-  for (let x = 0; x < h; x++) {
-    for (let y = 0; y < w; y++) {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
       let cell = document.createElement("div");
-      cell.classList.add("cell", "neutral");
-      cell.y = x;
-      cell.x = y;
+      cell.classList = "cell neutral " + x + " " + y;
+      cell.cellType = "neutral";
+      cell.x = x;
+      cell.y = y;
 
       cell.addEventListener(
         "mousedown",
@@ -133,13 +133,13 @@ function createGrid() {
         false
       );
 
-      grid[x][y] = cell;
+      grid[y][x] = cell;
       container.appendChild(cell);
     }
   }
   document.getElementById("main").addEventListener(
     "mouseup",
-    function () {
+    () => {
       mouseDown = false;
     },
     false
@@ -169,32 +169,31 @@ function animateWater() {
 }
 
 function neighbourIs(x, y, obj) {
-  let classN = "cell " + obj;
-  if (x < h - 1 && grid[x+1][y].className == classN) {
+  if (x < w - 1 && grid[y][x + 1].cellType == obj) {
     return true;
-  } else if (x > 0 && grid[x-1][y].className == classN) {
+  } else if (x > 0 && grid[y][x - 1].cellType == obj) {
     return true;
-  } else if (y < w - 1 && grid[x][y+1].className == classN) {
+  } else if (y < h - 1 && grid[y + 1][x].cellType == obj) {
     return true;
-  } else if (y > 0 && grid[x][y-1].className == classN) {
+  } else if (y > 0 && grid[y - 1][x].cellType == obj) {
     return true;
   }
   return false;
 }
 
-function variedNeighbourIs(x, y, obj, nSlice) {
-  let classN = "cell " + obj;
-  if (x < h - 1 && grid[x+1][y].className.slice(0, nSlice) == classN) {
-    return true;
-  } else if (x > 0 && grid[x-1][y].className.slice(0, nSlice) == classN) {
-    return true;
-  } else if (y < w - 1 && grid[x][y+1].className.slice(0, nSlice) == classN) {
-    return true;
-  } else if (y > 0 && grid[x][y-1].className.slice(0, nSlice) == classN) {
-    return true;
-  }
-  return false;
-}
+// function variedNeighbourIs(x, y, obj, nSlice) {
+//   let classN = "cell " + obj;
+//   if (x < h - 1 && grid[x + 1][y].className.slice(0, nSlice) == classN) {
+//     return true;
+//   } else if (x > 0 && grid[x - 1][y].className.slice(0, nSlice) == classN) {
+//     return true;
+//   } else if (y < w - 1 && grid[x][y + 1].className.slice(0, nSlice) == classN) {
+//     return true;
+//   } else if (y > 0 && grid[x][y - 1].className.slice(0, nSlice) == classN) {
+//     return true;
+//   }
+//   return false;
+// }
 
 function onEdge(x, y) {
   return y == 0 || y == w - 1 || x == 0 || x == h - 1;
@@ -202,9 +201,9 @@ function onEdge(x, y) {
 
 function driveLocations() {
   let locations = [];
-  for (let x = 0; x < h; x++) {
-    for (let y = 0; y < w; y++) {
-      if (grid[x][y].className == "cell road") {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (grid[y][x].className == "cell road") {
         let location = [x, y];
         if (onEdge(x, y) || neighbourIs(x, y, "farm")) {
           locations.push(location);
@@ -274,12 +273,12 @@ function carDrive(current, prev, step, path, carClass) {
   if (prev != null) {
     // Remove car from prev
     let [px, py] = prev;
-    grid[px][py].classList.remove(carClass);
+    grid[py][px].classList.remove(carClass);
   }
 
   if (current != null) {
     let [cx, cy] = current;
-    grid[cx][cy].classList.add(carClass);
+    grid[cy][cx].classList.add(carClass);
 
     let next = null;
     if (step < path.length - 1) {
@@ -291,16 +290,16 @@ function carDrive(current, prev, step, path, carClass) {
     }, 300);
   } else {
     let [px, py] = prev;
-    grid[px][py].classList.remove(carClass);
+    grid[py][px].classList.remove(carClass);
   }
 }
 
 function roadNetwork() {
-  let network = createArray(h, w);
+  let network = createArray(w, h);  // Road network is flipped vs grid for the A* implementation
 
-  for (let x = 0; x < h; x++) {
-    for (let y = 0; y < w; y++) {
-      if (grid[x][y].className == "cell road") {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (grid[y][x].cellType == "road") {
         network[x][y] = 1;
       } else {
         network[x][y] = 0;
@@ -317,13 +316,13 @@ function tryCarDrive() {
   if (p >= Math.random()) {
     let [sx, sy] = selectRandomLocation(startLocations);
 
-    if (sx != null && sy != null) {
+    if (sx != null) {
       let finishLocations = driveLocations();
       let [fx, fy] = selectRandomLocation(
         filterByDistance(sx, sy, finishLocations, 10)
       );
 
-      if (fx != null && fy != null) {
+      if (fx != null) {
         let graph = new Graph(roadNetwork());
         let start = graph.grid[sx][sy];
         let finish = graph.grid[fx][fy];
@@ -332,8 +331,8 @@ function tryCarDrive() {
           // If found a path that the car can take
           console.log(
             "Car driving from (" + sx + ", ",
-            +sy + ") to (" + fx + ", ",
-            +fy + ")"
+            + sy + ") to (" + fx + ", ",
+            + fy + ")"
           );
           carDrive([sx, sy], null, 0, path, "car-" + rand1toN(6));
         }
@@ -350,20 +349,20 @@ function cellToCoord(x, y) {
 
 function placeAnimalOverCell(x, y, animal) {
   let [xCoord, yCoord] = cellToCoord(x, y);
-  animal.top = xCoord + Math.floor(Math.random() * 3);
-  animal.left = yCoord + Math.floor(Math.random() * 3);
-  animal.style.top = animal.top + "px";
+  animal.left = xCoord + Math.floor(Math.random() * 3);
+  animal.top = yCoord + Math.floor(Math.random() * 3);
   animal.style.left = animal.left + "px";
+  animal.style.top = animal.top + "px";
 }
 
 function cellIsFarmBorder(x, y) {
-  return cellIsGrass(x, y) && neighbourIs(x, y, "farm");
+  return cellIs(x, y, "grass") && neighbourIs(x, y, "farm");
 }
 
 function farmLocations() {
   let locations = [];
-  for (let x = 0; x < h; x++) {
-    for (let y = 0; y < w; y++) {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
       if (cellIsFarmBorder(x, y)) {
         locations.push([x, y]);
       }
@@ -383,6 +382,7 @@ function spawnAnimals() {
       // move (gradually move away from obstacles)
       animal.failedMove = null;
       placeAnimalOverCell(x, y, animal);
+      console.log(x, y, animal);
       animals.push(animal);
       document.getElementById("canvas").appendChild(animal);
     }
@@ -395,13 +395,13 @@ function coordsToCell(xCoord, yCoord) {
   return [Math.floor(xCoord / 8), Math.floor(yCoord / 8)];
 }
 
-function cellIsGrass(x, y) {
-  return grid[x][y].className.slice(0, 10) == "cell grass";
+function cellIs(x, y, cellType) {
+  return grid[y][x].cellType == cellType;
 }
 
 function moveUp(animal) {
-  let [x, y] = coordsToCell(animal.top - animalBuffer, animal.left);
-  if (cellIsGrass(x, y)) {
+  let [x, y] = coordsToCell(animal.left, animal.top - animalBuffer);
+  if (cellIs(x, y, "grass")) {
     animal.top = animal.top - animalMovement;
     animal.style.top = animal.top + "px";
     return true;
@@ -409,8 +409,8 @@ function moveUp(animal) {
   return false;
 }
 function moveDown(animal) {
-  let [x, y] = coordsToCell(animal.top + 5 + animalBuffer, animal.left);
-  if (cellIsGrass(x, y)) {
+  let [x, y] = coordsToCell(animal.left, animal.top + 5 + animalBuffer,);
+  if (cellIs(x, y, "grass")) {
     animal.top = animal.top + animalMovement;
     animal.style.top = animal.top + "px";
     return true;
@@ -418,8 +418,8 @@ function moveDown(animal) {
   return false;
 }
 function moveLeft(animal) {
-  let [x, y] = coordsToCell(animal.top, animal.left - animalBuffer);
-  if (cellIsGrass(x, y)) {
+  let [x, y] = coordsToCell(animal.left - animalBuffer, animal.top);
+  if (cellIs(x, y, "grass")) {
     animal.left = animal.left - animalMovement;
     animal.style.left = animal.left + "px";
     return true;
@@ -427,8 +427,8 @@ function moveLeft(animal) {
   return false;
 }
 function moveRight(animal) {
-  let [x, y] = coordsToCell(animal.top, animal.left + 5 + animalBuffer);
-  if (cellIsGrass(x, y)) {
+  let [x, y] = coordsToCell(animal.left + 5 + animalBuffer, animal.top);
+  if (cellIs(x, y, "grass")) {
     animal.left = animal.left + animalMovement;
     animal.style.left = animal.left + "px";
     return true;
@@ -466,9 +466,9 @@ function moveAnimals() {
 
 function grassForestLocations() {
   let locations = [];
-  for (let x = 0; x < h; x++) {
-    for (let y = 0; y < w; y++) {
-      if (cellIsGrass(x, y) && variedNeighbourIs(x, y, 'forest', 11)) {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (cellIs(x, y, "grass") && neighbourIs(x, y, "forest")) {
         locations.push([x, y]);
       }
     }
@@ -477,16 +477,18 @@ function grassForestLocations() {
 }
 
 function growForest() {
-  if (0.1 >= Math.random()) {
+  if (1 >= Math.random()) {
     let locations = grassForestLocations();
     console.log(locations);
     if (locations.length > 0) {
       let [x, y] = locations[Math.floor(Math.random() * locations.length)];
-      grid[x][y].className = "cell forest-" + rand1toN(5);
+      grid[y][x].className = "cell forest-" + rand1toN(5);
+      grid[y][x].cellType = "forest";
     }
   }
 
-  setTimeout(growForest, 100000);
+  // setTimeout(growForest, 100000);
+  setTimeout(growForest, 500);
 }
 
 let w = 180;
@@ -505,4 +507,4 @@ setTimeout(animateWater, 2000);
 setTimeout(tryCarDrive, 500);
 setTimeout(spawnAnimals, 10000);
 setTimeout(moveAnimals, 1000);
-setTimeout(growForest, 100000);
+setTimeout(growForest, 500);
