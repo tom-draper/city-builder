@@ -13,8 +13,8 @@ body {
 }
 
 #main {
-    margin: 30px auto 50px auto; /* 50px toolbar height */
     display: grid;
+    height: 100vh;
 }
 
 #canvas {
@@ -22,9 +22,9 @@ body {
     grid-template-columns: repeat(180, max-content);
     width: max-content;
     place-content: center;
-    margin: auto;
     position: relative;
-    box-shadow: 10px 10px 8px #888888;;
+    box-shadow: 10px 10px 8px #888888;
+    margin: 30px auto auto auto;
 }
 
 .toolbar {
@@ -62,7 +62,6 @@ button {
     font-family: 'Roboto',sans-serif;
     font-family: 'Acme', sans-serif;
     font-size: 16px;
-    /* text-transform: uppercase; */
     font-weight: 500;
     color: #FFFFFF;
     background-color:#3369ff;
@@ -74,9 +73,7 @@ button {
 
 
 .active {
-    background-color: #ff4747; 
-    /* box-shadow: inset 0 -0.15em 0 0 #b43131; */
-  
+    background-color: #ff4747;   
 }
 
 .cell {
@@ -89,9 +86,7 @@ button {
     -webkit-user-select: none;
     -ms-user-select: none;
 }
-/* .cell:hover {
-    opacity: 0.6;
-} */
+
 .neutral {
     background-color: rgb(255, 253, 245);
 }
@@ -100,6 +95,7 @@ button {
     background-color: rgb(90,83,72);
     background-color: rgb(82,90,96);
 }
+
 .grass-1 {
     background-color: rgb(123, 219, 111);
 }
@@ -147,7 +143,7 @@ button {
     background-color: rgb(0, 0, 0) !important;
 }
 .car-3 {
-    background-color: rgb(50, 187, 16) !important;
+    background-color: rgb(230, 159, 6) !important;
 }
 .car-4 {
     background-color: rgb(212, 214, 37) !important;
@@ -169,6 +165,22 @@ button {
 
 .farm {
     background-color: rgb(73, 56, 56);
+}
+
+.sand-1 {
+    background-color: #f6d7b0;
+}
+.sand-2 {
+    background-color: #f2d2a9;
+}
+.sand-3 {
+    background-color: #eccca2;
+}
+.sand-4 {
+    background-color: #e7c496;
+}
+.sand-5 {
+    background-color: #e1bf92;
 }
 
 .forest-1 {
@@ -199,5 +211,4 @@ button {
     position: absolute;
     background-color: #F0E9D1;
     z-index: 5;
-
 }

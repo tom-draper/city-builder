@@ -5,19 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>City Builder</title>
-  <link href="style.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet"/>
 </head>
 <body>
   <div id="main">
     <div id="canvas">
-      <script type='text/javascript' src='astar.js'></script>
       <script type='text/javascript' src="app.js"></script>
+      <script type='text/javascript' src='astar.js'></script>
     </div>
     <div class="toolbar">
       <div class="objects">
         <button class="active" id='roadBtn' onclick="setCurrentObj('road')">Road</button>
         <button id='grassBtn' onclick="setCurrentObj('grass')">Grass</button>
         <button id='waterBtn' onclick="setCurrentObj('water')">Water</button>
+        <button id='sandBtn' onclick="setCurrentObj('sand')">Sand</button>
         <button id='forestBtn' onclick="setCurrentObj('forest')">Forest</button>
         <button id='houseBtn' onclick="setCurrentObj('house')">House</button>
         <button id='farmBtn' onclick="setCurrentObj('farm')">Farm</button>
