@@ -211,7 +211,6 @@ function driveLocations() {
       }
     }
   }
-
   return locations;
 }
 
@@ -350,7 +349,6 @@ function farmLocations() {
       }
     }
   }
-
   return locations;
 }
 
