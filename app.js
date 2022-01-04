@@ -40,26 +40,26 @@ async function applyObj(x, y) {
 async function fill(cell, cellType) {
   let x = cell.x;
   let y = cell.y;
-  if (cell.cellType == cellType && onGrid(x, y)) {
+  if (cell.cellType == cellType) {
     await applyObj(x, y);
     if (y < h - 1) {
-      await fill(grid[y + 1][x], cellType);
+      fill(grid[y + 1][x], cellType);
     }
     if (x < w - 1) {
-      await fill(grid[y][x + 1], cellType);
+      fill(grid[y][x + 1], cellType);
     }
     if (y > 0) {
-      await fill(grid[y - 1][x], cellType);
+      fill(grid[y - 1][x], cellType);
     }
-    if (cell.x > 0) {
-      await fill(grid[y][x - 1], cellType);
+    if (x > 0) {
+      fill(grid[y][x - 1], cellType);
     }
   }
 }
 
 async function turnCellToObj(cell) {
   if (fillMode) {
-    await fill(cell, cell.cellType);
+    fill(cell, cell.cellType);
   } else {
     let [objWidth, objHeight] = objSize(currentObj);
     for (let y = 0; y < objHeight; y++) {
