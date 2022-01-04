@@ -112,7 +112,7 @@ function createGrid() {
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       let cell = document.createElement("div");
-      cell.classList = "cell neutral " + x + " " + y;
+      cell.classList = "cell neutral ";
       cell.cellType = "neutral";
       cell.x = x;
       cell.y = y;
@@ -256,28 +256,16 @@ function onGrid(x, y) {
   return x >= 0 && x < w && y >= 0 && y < h;
 }
 
-function carDrive(current, prev, step, path, carClass) {
-  if (prev != null) {
-    // Remove car from prev
-    let [px, py] = prev;
-    grid[py][px].classList.remove(carClass);
-  }
-
-  if (current != null) {
-    let [cx, cy] = current;
-    grid[cy][cx].classList.add(carClass);
-
-    let next = null;
-    if (step < path.length - 1) {
-      next = [path[step + 1].x, path[step + 1].y];
-    }
+function carDrive(car, step, path) {
+  if (step < path.length) {
+    car.style.left = (path[step].x*8) + "px";
+    car.style.top = (path[step].y*8) + "px";
 
     setTimeout(function () {
-      carDrive(next, current, step + 1, path, carClass);
+      carDrive(car, step + 1, path);
     }, 300);
   } else {
-    let [px, py] = prev;
-    grid[py][px].classList.remove(carClass);
+    document.getElementById("canvas").removeChild(car);
   }
 }
 
@@ -300,7 +288,7 @@ function tryCarDrive() {
   let startLocations = driveLocations();
 
   let p = Math.min(startLocations.length * 0.0002, 1);
-  if (p >= Math.random()) {
+  if (0.1 >= Math.random()) {
     let [sx, sy] = selectRandomLocation(startLocations);
 
     if (sx != null) {
@@ -319,7 +307,14 @@ function tryCarDrive() {
             + sy + ") to (" + fx + ", ",
             + fy + ")"
           );
-          carDrive([sx, sy], null, 0, path, "car-" + rand1toN(6));
+
+          let car = document.createElement("div");
+          car.classList = "car car-" + rand1toN(6);
+          car.style.left = (sx*8) + "px";
+          car.style.top = (sy*8) + "px";
+          document.getElementById("canvas").appendChild(car);
+
+          carDrive(car, 1, path);
         }
       }
     }
@@ -462,7 +457,7 @@ function grassForestLocations() {
 }
 
 function growForest() {
-  if (1 >= Math.random()) {
+  if (0.1 >= Math.random()) {
     let locations = grassForestLocations();
     console.log(locations);
     if (locations.length > 0) {
@@ -472,8 +467,7 @@ function growForest() {
     }
   }
 
-  // setTimeout(growForest, 100000);
-  setTimeout(growForest, 500);
+  setTimeout(growForest, 100000);
 }
 
 let w = 180;
@@ -492,4 +486,4 @@ setTimeout(animateWater, 2000);
 setTimeout(tryCarDrive, 500);
 setTimeout(spawnAnimals, 10000);
 setTimeout(moveAnimals, 1000);
-setTimeout(growForest, 500);
+setTimeout(growForest, 100000);

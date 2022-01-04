@@ -215,3 +215,12 @@ button {
     background-color: red;
     z-index: 5;
 }
+
+.car {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    background-color: #F0E9D1;
+    background-color: red;
+    z-index: 5;
+}
