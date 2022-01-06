@@ -258,6 +258,11 @@ function onGrid(x, y) {
   return x >= 0 && x < w && y >= 0 && y < h;
 }
 
+/*
+ * Runs intermittently.
+ * Moves the car div along its input path with each run until it reaches the 
+ * final location and the car is removed from the canvas.
+ */
 function carDrive(car, step, path) {
   if (step < path.length) {
     car.style.left = (path[step].x * 8) + "px";
@@ -295,6 +300,17 @@ function createCar() {
   return car;
 }
 
+/*
+ * Runs intermittently.
+ * Probability of executing grows from 0.02% to a maximum of 100% depending on
+ * the number of possible car spawn points exist. Car spawn points include any
+ * road cell that has at least one of its four neighbouring cells as: a house,
+ * supermarket, farm, outside of the canvas.
+ * From this possible spawn points a random start and finish point is selected.
+ * The A* algorithm is used to find the shortest path between these points, only
+ * using road cells. If a path is found the car is created and begins its 
+ * journey. 
+ */
 function tryCarDrive() {
   let startLocations = driveLocations();
 
@@ -352,15 +368,22 @@ function farmLocations() {
   return locations;
 }
 
+/*
+ * Runs intermittently.
+ * 5% probability of executing.
+ * A random grass cell that has a farm cell as at least one of its four 
+ * neighbours is selected. An animal div is created and placed at a random 
+ * location within this cell.
+ */
 function spawnAnimals() {
   if (0.05 >= Math.random()) {
     let [x, y] = selectRandomLocation(farmLocations());
     if (x != null) {
       let animal = document.createElement("div");
       animal.classList = "sheep";
-      // FailedMove attribute to skip travelling in direction of last failed
+      // avoidDirection attribute to skip travelling in direction of last failed
       // move (gradually move away from obstacles)
-      animal.failedMove = null;
+      animal.avoidDirection = null;
       placeAnimalOverCell(x, y, animal);
       animals.push(animal);
       document.getElementById("canvas").appendChild(animal);
@@ -419,26 +442,36 @@ function moveRight(animal) {
   return false;
 }
 
+/*
+ * Runs intermittently.
+ * Each animal has an 50% chance of moving, independent from owhether other 
+ * animals move.
+ * One of the four moving directions is selected randomly. The animal attempts
+ * to move in this direction. If the move fails (i.e. the new location is not a 
+ * grass cell), the animal remembers not to move in this direction again (until 
+ * another failed move occurs and that direction is replaced). This has the
+ * effect if gradually moving the animal away from any obsticles it encounters.
+ */
 function moveAnimals() {
   for (let i = 0, n = animals.length; i < n; i++) {
     if (0.5 >= Math.random()) {
       let r = rand1toN(4);
       let animal = animals[i];
-      if (r == 1 && animal.failedMove != 1) {
+      if (r == 1 && animal.avoidDirection != 1) {
         if (!moveDown(animal)) {
-          animal.failedMove = r;
+          animal.avoidDirection = r;
         }
-      } else if (r == 2 && animal.failedMove != 2) {
+      } else if (r == 2 && animal.avoidDirection != 2) {
         if (!moveUp(animal)) {
-          animal.failedMove = r;
+          animal.avoidDirection = r;
         }
-      } else if (r == 3 && animal.failedMove != 3) {
+      } else if (r == 3 && animal.avoidDirection != 3) {
         if (!moveLeft(animal)) {
-          animal.failedMove = r;
+          animal.avoidDirection = r;
         }
-      } else if (r == 4 && animal.failedMove != 4) {
+      } else if (r == 4 && animal.avoidDirection != 4) {
         if (!moveRight(animal)) {
-          animal.failedMove = r;
+          animal.avoidDirection = r;
         }
       }
     }
@@ -459,6 +492,13 @@ function grassForestLocations() {
   return locations;
 }
 
+/*
+ * Runs intermittently.
+ * 10% probability of executing.
+ * Finds all cells of grass with at least one of its four neighbouring cells
+ * a forest cell. Selects one of these cells randomly and changes it into a 
+ * forest cell.
+ */
 function growForest() {
   if (0.1 >= Math.random()) {
     let locations = grassForestLocations();
