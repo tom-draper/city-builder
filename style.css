@@ -212,7 +212,6 @@ button {
     height: 5px;
     position: absolute;
     background-color: #F0E9D1;
-    background-color: red;
     z-index: 5;
 }
 
@@ -220,7 +219,17 @@ button {
     width: 8px;
     height: 8px;
     position: absolute;
-    background-color: #F0E9D1;
-    background-color: red;
+    z-index: 5;
+}
+
+.fishing {
+    background-color: #5c626a;
+}
+
+.boat {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    background-color: rgb(255, 255, 255);
     z-index: 5;
 }

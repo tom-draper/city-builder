@@ -81,6 +81,7 @@ function setCurrentObj(obj) {
   document.getElementById("fence-btn").classList.remove("active");
   document.getElementById("house-btn").classList.remove("active");
   document.getElementById("supermarket-btn").classList.remove("active");
+  document.getElementById("fishing-btn").classList.remove("active");
   document.getElementById("farm-btn").classList.remove("active");
   document.getElementById("neutral-btn").classList.remove("active");
   document.getElementById(obj + "-btn").classList.add("active");
@@ -258,18 +259,51 @@ function onGrid(x, y) {
   return x >= 0 && x < w && y >= 0 && y < h;
 }
 
+async function smoothMove(object, currentX, currentY, targetX, targetY) {
+  let nextX = currentX;
+  let diffX = targetX - currentX;
+  if (diffX > 0) {
+    nextX += 4;
+  } else if (diffX < 0) {
+    nextX -= 4;
+  }
+  
+  let nextY = currentY;
+  let diffY = targetY - currentY;
+  if (diffY > 0) {
+    nextY += 4;
+  } else if (diffY < 0) {
+    nextY -= 4;
+  }
+  object.style.left = nextX + 'px';
+  object.style.top = nextY + 'px';
+
+  if (nextX != targetX || nextY != targetY) {
+    setTimeout(function () {
+      smoothMove(object, nextX, nextY, targetX, targetY);
+    }, 150);
+  }
+}
+
 /*
  * Runs intermittently.
  * Moves the car div along its input path with each run until it reaches the 
  * final location and the car is removed from the canvas.
  */
-function carDrive(car, step, path) {
+function drive(car, step, path) {
   if (step < path.length) {
     car.style.left = (path[step].x * 8) + "px";
     car.style.top = (path[step].y * 8) + "px";
+    // smoothMove(
+    //   car, 
+    //   path[step-1].x * 8, 
+    //   path[step-1].y * 8, 
+    //   path[step].x * 8, 
+    //   path[step].y * 8
+    // );
 
     setTimeout(function () {
-      carDrive(car, step + 1, path);
+      drive(car, step + 1, path);
     }, 300);
   } else {
     document.getElementById("canvas").removeChild(car);
@@ -291,11 +325,11 @@ function roadNetwork() {
   return network;
 }
 
-function createCar() {
+function createCar(x, y) {
   let car = document.createElement("div");
   car.classList = "car car-" + rand1toN(6);
-  car.style.left = (sx * 8) + "px";
-  car.style.top = (sy * 8) + "px";
+  car.style.left = (x * 8) + "px";
+  car.style.top = (y * 8) + "px";
   document.getElementById("canvas").appendChild(car);
   return car;
 }
@@ -330,14 +364,170 @@ function tryCarDrive() {
         if (path.length > 0) {
           // If found a path that the car can take
           console.log("Car driving from (" + sx + ", ", + sy + ") to (" + fx + ", ", + fy + ")");
-          let car = createCar();
-          carDrive(car, 1, path);
+          let car = createCar(sx, sy);
+          drive(car, 1, path);
         }
       }
     }
   }
 
   setTimeout(tryCarDrive, 500);
+}
+
+function cellTypeMask(cellType) {
+  let network = createArray(w, h); // Road network is flipped vs grid for the A* implementation
+
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (grid[y][x].cellType == cellType) {
+        network[x][y] = 1;
+      } else {
+        network[x][y] = 0;
+      }
+    }
+  }
+  return network;
+}
+
+function surroundedBy(x, y, obj) {
+  if (x < 1 || y < 1 || x > w - 2 || y > h - 2) {
+    return false;
+  } else if (grid[y][x + 1].cellType != obj || 
+    grid[y][x - 1].cellType != obj || 
+    grid[y + 1][x].cellType != obj ||
+    grid[y - 1][x].cellType != obj ||
+    grid[y - 1][x - 1].cellType != obj ||
+    grid[y + 1][x - 1].cellType != obj ||
+    grid[y - 1][x + 1].cellType != obj ||
+    grid[y + 1][x + 1].cellType != obj) {
+    return false;
+  }
+  return true;
+}
+
+function fishingLocations() {
+  let locations = [];
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (grid[y][x].cellType == "water" && surroundedBy(x, y, "water")) {
+        locations.push([x, y]);
+      }
+    }
+  }
+  return locations;
+}
+
+function boatSpawnLocations() {
+  let locations = [];
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (grid[y][x].cellType == "water" && neighbourIs(x, y, "fishing")) {
+        locations.push([x, y]);
+      }
+    }
+  }
+  return locations;
+}
+
+function createBoat(x, y) {
+  let boat = document.createElement("div");
+  boat.classList = "boat";
+  boat.style.left = (x * 8) + "px";
+  boat.style.top = (y * 8) + "px";
+  boat.spawnX = x;
+  boat.spawnY = y;
+  document.getElementById("canvas").appendChild(boat);
+  return boat;
+}
+
+function boatPosition(boat) {
+  // Remove 'px' and convert to int
+  let x = parseInt(boat.style.left.slice(0, -2)) / 8;
+  let y = parseInt(boat.style.top.slice(0, -2)) / 8;
+  return [x, y];
+}
+
+function nextFishingLocation(boat) {
+  let [sx, sy] = boatPosition(boat); // Current boat location
+
+  let graph = new Graph(cellTypeMask("water"));
+  let start = graph.grid[sx][sy];
+
+  if (0.8 >= Math.random()) {
+    // Find a new fishing location and move to it
+    let finishLocations = fishingLocations();
+    let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
+
+    if (fx != null) {
+      let finish = graph.grid[fx][fy];
+      let path = astar.search(graph, start, finish);
+      if (path.length > 0) {
+        // If found a path that the boat can take
+        sail(boat, 1, path, false);
+      }
+    }
+  } else {
+    // Return home
+    let finish = graph.grid[boat.spawnX][boat.spawnY];
+    let path = astar.search(graph, start, finish);
+    if (path.length > 0) {
+      // If found a path that the boat can take
+      sail(boat, 1, path, true);
+    }
+  }
+}
+
+/*
+ * Runs intermittently.
+ * Moves the car div along its input path with each run until it reaches the 
+ * final location and the car is removed from the canvas.
+ */
+function sail(boat, step, path, destroyBoat) {
+  if (step < path.length) {
+    boat.style.left = (path[step].x * 8) + "px";
+    boat.style.top = (path[step].y * 8) + "px";
+
+    setTimeout(function () {
+      sail(boat, step + 1, path, destroyBoat);
+    }, 300);
+  } else {
+    if (destroyBoat) {
+      document.getElementById("canvas").removeChild(boat);
+    } else {
+      let fishingTime = rand1toN(500) * 1000;
+      setTimeout(function () {
+        nextFishingLocation(boat);
+      }, fishingTime);
+    }
+  }
+}
+
+function tryGoFishing() {
+  let startLocations = boatSpawnLocations();
+
+  let p = Math.min(startLocations.length * 0.0002, 1);
+  if (p >= Math.random()) {
+    let [sx, sy] = selectRandomLocation(startLocations);
+
+    if (sx != null) {
+      let finishLocations = fishingLocations();
+      let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
+
+      if (fx != null) {
+        let graph = new Graph(cellTypeMask("water"));
+        let start = graph.grid[sx][sy];
+        let finish = graph.grid[fx][fy];
+        let path = astar.search(graph, start, finish);
+        if (path.length > 0) {
+          // If found a path that the boat can take
+          let boat = createBoat(sx, sy);
+          sail(boat, 1, path, false);
+        }
+      }
+    }
+  }
+
+  setTimeout(tryGoFishing, 2000);
 }
 
 function cellToCoord(x, y) {
@@ -527,6 +717,7 @@ let grid = createGrid();
 
 setTimeout(animateWater, 2000);
 setTimeout(tryCarDrive, 500);
+setTimeout(tryGoFishing, 500);
 setTimeout(spawnAnimals, 10000);
 setTimeout(moveAnimals, 1000);
 setTimeout(growForest, 100000);
