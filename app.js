@@ -72,19 +72,8 @@ async function turnCellToObj(cell) {
 }
 
 function setCurrentObj(obj) {
-  document.getElementById("road-btn").classList.remove("active");
-  document.getElementById("water-btn").classList.remove("active");
-  document.getElementById("grass-btn").classList.remove("active");
-  document.getElementById("sand-btn").classList.remove("active");
-  document.getElementById("forest-btn").classList.remove("active");
-  document.getElementById("hedge-btn").classList.remove("active");
-  document.getElementById("fence-btn").classList.remove("active");
-  document.getElementById("house-btn").classList.remove("active");
-  document.getElementById("supermarket-btn").classList.remove("active");
-  document.getElementById("fishing-btn").classList.remove("active");
-  document.getElementById("farm-btn").classList.remove("active");
-  document.getElementById("neutral-btn").classList.remove("active");
-  document.getElementById(obj + "-btn").classList.add("active");
+  document.getElementById(obj + "-btn").className = "active";
+  document.getElementById(currentObj + "-btn").className = "";
   currentObj = obj;
 }
 
@@ -363,7 +352,6 @@ function tryCarDrive() {
         let path = astar.search(graph, start, finish);
         if (path.length > 0) {
           // If found a path that the car can take
-          console.log("Car driving from (" + sx + ", ", + sy + ") to (" + fx + ", ", + fy + ")");
           let car = createCar(sx, sy);
           drive(car, 1, path);
         }
@@ -489,7 +477,7 @@ function sail(boat, step, path, destroyBoat) {
 
     setTimeout(function () {
       sail(boat, step + 1, path, destroyBoat);
-    }, 300);
+    }, 800);
   } else {
     if (destroyBoat) {
       document.getElementById("canvas").removeChild(boat);
@@ -714,6 +702,8 @@ let animalMovement = 2;
 let animalBuffer = 6;
 
 let grid = createGrid();
+
+
 
 setTimeout(animateWater, 2000);
 setTimeout(tryCarDrive, 500);
