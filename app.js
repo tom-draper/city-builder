@@ -1,3 +1,4 @@
+
 async function turnDraggedCellToObj() {
   if (mouseDown) {
     await turnCellToObj(
@@ -83,14 +84,13 @@ function toggleFill() {
 }
 
 function createArray(length) {
-  let arr = new Array(length || 0),
-    i = length;
+  let arr = new Array(length || 0);
+  let i = length;
 
   if (arguments.length > 1) {
     let args = Array.prototype.slice.call(arguments, 1);
     while (i--) arr[length - 1 - i] = createArray.apply(this, args);
   }
-
   return arr;
 }
 
@@ -150,10 +150,7 @@ function randInt(min, max) {
 }
 
 function randomBlue() {
-  let r = randInt(28, 40);
-  let g = randInt(165, 185);
-  let b = randInt(240, 255);
-  return `rgb(${r},${g},${b})`;
+  return `rgb(${randInt(28, 40)},${randInt(165, 185)},${randInt(240, 255)})`;
 }
 
 function animateWater() {
@@ -167,13 +164,12 @@ function animateWater() {
 }
 
 function neighbourIs(x, y, obj) {
-  if (x < w - 1 && grid[y][x + 1].cellType == obj) {
-    return true;
-  } else if (x > 0 && grid[y][x - 1].cellType == obj) {
-    return true;
-  } else if (y < h - 1 && grid[y + 1][x].cellType == obj) {
-    return true;
-  } else if (y > 0 && grid[y - 1][x].cellType == obj) {
+  if (
+    (x < w - 1 && grid[y][x + 1].cellType == obj) || 
+    (x > 0 && grid[y][x - 1].cellType == obj) || 
+    (y < h - 1 && grid[y + 1][x].cellType == obj) || 
+    (y > 0 && grid[y - 1][x].cellType == obj)
+  ) {
     return true;
   }
   return false;
@@ -205,11 +201,11 @@ function driveLocations() {
 }
 
 function selectRandomLocation(locations) {
-  let selectedLoc = [null, null];
   if (locations.length > 0) {
-    selectedLoc = locations[Math.floor(Math.random() * locations.length)];
+    return locations[Math.floor(Math.random() * locations.length)];
+  } else {
+    return [null, null];
   }
-  return selectedLoc;
 }
 
 function distance(x1, y1, x2, y2) {
@@ -295,6 +291,7 @@ function drive(car, step, path) {
       drive(car, step + 1, path);
     }, 300);
   } else {
+    nCars -= 1;
     document.getElementById("canvas").removeChild(car);
   }
 }
@@ -326,18 +323,18 @@ function createCar(x, y) {
 /*
  * Runs intermittently.
  * Probability of executing grows from 0.02% to a maximum of 100% depending on
- * the number of possible car spawn points exist. Car spawn points include any
+ * the number of existing car spawn points. Car spawn points include any
  * road cell that has at least one of its four neighbouring cells as: a house,
  * supermarket, farm, outside of the canvas.
  * From this possible spawn points a random start and finish point is selected.
  * The A* algorithm is used to find the shortest path between these points, only
- * using road cells. If a path is found the car is created and begins its 
+ * using road cells. If a path is found, the car is created and begins its 
  * journey. 
  */
 function tryCarDrive() {
   let startLocations = driveLocations();
 
-  let p = Math.min(startLocations.length * 0.0002, 1);
+  let p = Math.min(startLocations.length * 0.001, 1);
   if (p >= Math.random()) {
     let [sx, sy] = selectRandomLocation(startLocations);
 
@@ -353,6 +350,7 @@ function tryCarDrive() {
         if (path.length > 0) {
           // If found a path that the car can take
           let car = createCar(sx, sy);
+          nCars += 1;
           drive(car, 1, path);
         }
       }
@@ -380,14 +378,16 @@ function cellTypeMask(cellType) {
 function surroundedBy(x, y, obj) {
   if (x < 1 || y < 1 || x > w - 2 || y > h - 2) {
     return false;
-  } else if (grid[y][x + 1].cellType != obj || 
+  } else if (
+    grid[y][x + 1].cellType != obj || 
     grid[y][x - 1].cellType != obj || 
     grid[y + 1][x].cellType != obj ||
     grid[y - 1][x].cellType != obj ||
     grid[y - 1][x - 1].cellType != obj ||
     grid[y + 1][x - 1].cellType != obj ||
     grid[y - 1][x + 1].cellType != obj ||
-    grid[y + 1][x + 1].cellType != obj) {
+    grid[y + 1][x + 1].cellType != obj
+  ) {
     return false;
   }
   return true;
@@ -467,8 +467,10 @@ function nextFishingLocation(boat) {
 
 /*
  * Runs intermittently.
- * Moves the car div along its input path with each run until it reaches the 
- * final location and the car is removed from the canvas.
+ * Moves the boat div along its input path with each run until it reaches the 
+ * final location. The boat then waits for a random amount of time before
+ * sailing to a new location or returning to its original spawn point and
+ * despawning.
  */
 function sail(boat, step, path, destroyBoat) {
   if (step < path.length) {
@@ -490,6 +492,20 @@ function sail(boat, step, path, destroyBoat) {
   }
 }
 
+/*
+ * Runs intermittently.
+ * Probability of executing grows from 0.02% to a maximum of 100% depending on
+ * the number of existing boat spawn points. Boat spawn points include any
+ * water cell that has at least one of its four neighbouring cells as a fishing
+ * hut. Fishing locatiosn are water cells that are also surrounded by water cells. 
+ * A random boat spawn point is selected as the starting location, and a random
+ * fishing location is selected as the finishing location.
+ * The A* algorithm is used to find the shortest path between these points, only
+ * using water cells. If a path is found, the boat is created at the selected 
+ * spawn point and sails to its fishing location. It then repeatedly waits for
+ * a random amount of time followed by either: sailing to a new fishing location,
+ * or returning home and removed from the map.
+ */
 function tryGoFishing() {
   let startLocations = boatSpawnLocations();
 
@@ -662,7 +678,7 @@ function grassForestLocations() {
   let locations = [];
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (grid[y][x].cellType == "grass"&& neighbourIs(x, y, "forest")) {
+      if (grid[y][x].cellType == "grass" && neighbourIs(x, y, "forest")) {
         locations.push([x, y]);
       }
     }
@@ -691,12 +707,14 @@ function growForest() {
   setTimeout(growForest, 100000);
 }
 
+
 let w = 180;
 let h = 110;
 let currentObj = "road";
 let mouseDown = false;
 let fillMode = false;
 let waterPlaced = false;
+let nCars = 0;
 let animals = [];
 let animalMovement = 2;
 let animalBuffer = 6;
@@ -704,10 +722,9 @@ let animalBuffer = 6;
 let grid = createGrid();
 
 
-
 setTimeout(animateWater, 2000);
 setTimeout(tryCarDrive, 500);
-setTimeout(tryGoFishing, 500);
+setTimeout(tryGoFishing, 2000);
 setTimeout(spawnAnimals, 10000);
 setTimeout(moveAnimals, 1000);
 setTimeout(growForest, 100000);
