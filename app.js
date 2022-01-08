@@ -96,7 +96,6 @@ function createArray(length) {
 
 function createGrid() {
   let grid = createArray(h, w);
-
   let canvas = document.getElementById("canvas");
 
   for (let y = 0; y < h; y++) {
@@ -393,11 +392,15 @@ function surroundedBy(x, y, obj) {
   return true;
 }
 
-function fishingLocations() {
+function fishingLocations(currentX, currentY) {
   let locations = [];
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (grid[y][x].cellType == "water" && surroundedBy(x, y, "water")) {
+      if (
+        grid[y][x].cellType == "water" && 
+        surroundedBy(x, y, "water") && 
+        distance(x, y, currentX, currentY) > 2
+      ) {
         locations.push([x, y]);
       }
     }
@@ -443,7 +446,7 @@ function nextFishingLocation(boat) {
 
   if (0.8 >= Math.random()) {
     // Find a new fishing location and move to it
-    let finishLocations = fishingLocations();
+    let finishLocations = fishingLocations(sx, sy);
     let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
 
     if (fx != null) {
@@ -479,7 +482,7 @@ function sail(boat, step, path, destroyBoat) {
 
     setTimeout(function () {
       sail(boat, step + 1, path, destroyBoat);
-    }, 800);
+    }, 1200);
   } else {
     if (destroyBoat) {
       document.getElementById("canvas").removeChild(boat);
