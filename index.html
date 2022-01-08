@@ -15,7 +15,7 @@
     </div>
     <div class="toolbar">
       <div class="objects">
-        <button class="active" id='road-btn' onclick="setCurrentObj('road')">Road</button>
+        <button id='road-btn' onclick="setCurrentObj('road')" class="active">Road</button>
         <button id='grass-btn' onclick="setCurrentObj('grass')">Grass</button>
         <button id='water-btn' onclick="setCurrentObj('water')">Water</button>
         <button id='sand-btn' onclick="setCurrentObj('sand')">Sand</button>
@@ -28,12 +28,11 @@
         <button id='fence-btn' onclick="setCurrentObj('fence')">Fence</button>
       </div>
       <div class="tools">
-        <button id='neutral-btn' onclick="setCurrentObj('neutral')">Eraser</button>
         <button id="fill-btn" onclick="toggleFill()">Fill</button>
+        <button id='neutral-btn' onclick="setCurrentObj('neutral')">Eraser</button>
       </div>
       <div class="settings">
         <a id="donate-btn" target="_blank" href="https://ko-fi.com/tomdraper">Donate</a>
-        <!-- <button>Settings</button> -->
       </div>
     </div>
   </div>
