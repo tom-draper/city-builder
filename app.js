@@ -38,8 +38,8 @@ async function applyObj(x, y) {
 }
 
 async function fill(cell, cellType) {
-  let x = cell.x;
-  let y = cell.y;
+  const x = cell.x;
+  const y = cell.y;
   if (cell.cellType == cellType) {
     await applyObj(x, y);
     if (y < h - 1) {
@@ -61,7 +61,7 @@ async function turnCellToObj(cell) {
   if (fillMode) {
     fill(cell, cell.cellType);
   } else {
-    let [objWidth, objHeight] = objSize(currentObj);
+    const [objWidth, objHeight] = objSize(currentObj);
     for (let y = 0; y < objHeight; y++) {
       for (let x = 0; x < objWidth; x++) {
         if (onGrid(cell.x + x, cell.y + y)) {
@@ -81,6 +81,7 @@ function setCurrentObj(obj) {
 function toggleFill() {
   fillMode = !fillMode;
   document.getElementById("fill-btn").classList.toggle("active");
+  document.getElementById("fill-active").classList.toggle("fill-inactive");
 }
 
 function createArray(length) {
@@ -183,7 +184,7 @@ function driveLocations() {
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       if (grid[y][x].cellType == "road") {
-        let location = [x, y];
+        const location = [x, y];
         if (onEdge(x, y) || neighbourIs(x, y, "farm")) {
           locations.push(location);
         } else if (neighbourIs(x, y, "house")) {
@@ -214,7 +215,7 @@ function distance(x1, y1, x2, y2) {
 function filterByDistance(startx, starty, locations, maxd) {
   let filteredLocations = [];
   for (let i = 0, n = locations.length; i < n; i++) {
-    let [x, y] = locations[i];
+    const [x, y] = locations[i];
     if (distance(startx, starty, x, y) > maxd) {
       filteredLocations.push(locations[i]);
     }
@@ -232,7 +233,7 @@ function indexOfNode(arr, value) {
 }
 
 function removeNode(arr, node) {
-  let index = indexOfNode(arr, node);
+  const index = indexOfNode(arr, node);
   if (index > -1) {
     arr.splice(index, 1);
   }
@@ -245,7 +246,7 @@ function onGrid(x, y) {
 
 async function smoothMove(object, currentX, currentY, targetX, targetY) {
   let nextX = currentX;
-  let diffX = targetX - currentX;
+  const diffX = targetX - currentX;
   if (diffX > 0) {
     nextX += 4;
   } else if (diffX < 0) {
@@ -253,7 +254,7 @@ async function smoothMove(object, currentX, currentY, targetX, targetY) {
   }
   
   let nextY = currentY;
-  let diffY = targetY - currentY;
+  const diffY = targetY - currentY;
   if (diffY > 0) {
     nextY += 4;
   } else if (diffY < 0) {
@@ -331,21 +332,21 @@ function createCar(x, y) {
  * journey. 
  */
 function tryCarDrive() {
-  let startLocations = driveLocations();
+  const startLocations = driveLocations();
 
-  let p = Math.min(startLocations.length * 0.001, 1);
+  const p = Math.min(startLocations.length * 0.001, 1);
   if (p >= Math.random()) {
-    let [sx, sy] = selectRandomLocation(startLocations);
+    const [sx, sy] = selectRandomLocation(startLocations);
 
     if (sx != null) {
-      let finishLocations = driveLocations();
-      let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 10));
+      const finishLocations = driveLocations();
+      const [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 10));
 
       if (fx != null) {
-        let graph = new Graph(roadNetwork());
-        let start = graph.grid[sx][sy];
-        let finish = graph.grid[fx][fy];
-        let path = astar.search(graph, start, finish);
+        const graph = new Graph(roadNetwork());
+        const start = graph.grid[sx][sy];
+        const finish = graph.grid[fx][fy];
+        const path = astar.search(graph, start, finish);
         if (path.length > 0) {
           // If found a path that the car can take
           let car = createCar(sx, sy);
@@ -433,25 +434,25 @@ function createBoat(x, y) {
 
 function boatPosition(boat) {
   // Remove 'px' and convert to int
-  let x = parseInt(boat.style.left.slice(0, -2)) / 8;
-  let y = parseInt(boat.style.top.slice(0, -2)) / 8;
+  const x = parseInt(boat.style.left.slice(0, -2)) / 8;
+  const y = parseInt(boat.style.top.slice(0, -2)) / 8;
   return [x, y];
 }
 
 function nextFishingLocation(boat) {
-  let [sx, sy] = boatPosition(boat); // Current boat location
+  const [sx, sy] = boatPosition(boat); // Current boat location
 
-  let graph = new Graph(cellTypeMask("water"));
-  let start = graph.grid[sx][sy];
+  const graph = new Graph(cellTypeMask("water"));
+  const start = graph.grid[sx][sy];
 
   if (0.8 >= Math.random()) {
     // Find a new fishing location and move to it
-    let finishLocations = fishingLocations(sx, sy);
-    let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
+    const finishLocations = fishingLocations(sx, sy);
+    const [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
 
     if (fx != null) {
-      let finish = graph.grid[fx][fy];
-      let path = astar.search(graph, start, finish);
+      const finish = graph.grid[fx][fy];
+      const path = astar.search(graph, start, finish);
       if (path.length > 0) {
         // If found a path that the boat can take
         sail(boat, 1, path, false);
@@ -459,8 +460,8 @@ function nextFishingLocation(boat) {
     }
   } else {
     // Return home
-    let finish = graph.grid[boat.spawnX][boat.spawnY];
-    let path = astar.search(graph, start, finish);
+    const finish = graph.grid[boat.spawnX][boat.spawnY];
+    const path = astar.search(graph, start, finish);
     if (path.length > 0) {
       // If found a path that the boat can take
       sail(boat, 1, path, true);
@@ -487,7 +488,7 @@ function sail(boat, step, path, destroyBoat) {
     if (destroyBoat) {
       document.getElementById("canvas").removeChild(boat);
     } else {
-      let fishingTime = rand1toN(500) * 1000;
+      const fishingTime = rand1toN(500) * 1000;
       setTimeout(function () {
         nextFishingLocation(boat);
       }, fishingTime);
@@ -510,21 +511,21 @@ function sail(boat, step, path, destroyBoat) {
  * or returning home and removed from the map.
  */
 function tryGoFishing() {
-  let startLocations = boatSpawnLocations();
+  const startLocations = boatSpawnLocations();
 
-  let p = Math.min(startLocations.length * 0.0002, 1);
+  const p = Math.min(startLocations.length * 0.0002, 1);
   if (p >= Math.random()) {
-    let [sx, sy] = selectRandomLocation(startLocations);
+    const [sx, sy] = selectRandomLocation(startLocations);
 
     if (sx != null) {
-      let finishLocations = fishingLocations();
-      let [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
+      const finishLocations = fishingLocations();
+      const [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
 
       if (fx != null) {
-        let graph = new Graph(cellTypeMask("water"));
-        let start = graph.grid[sx][sy];
-        let finish = graph.grid[fx][fy];
-        let path = astar.search(graph, start, finish);
+        const graph = new Graph(cellTypeMask("water"));
+        const start = graph.grid[sx][sy];
+        const finish = graph.grid[fx][fy];
+        const path = astar.search(graph, start, finish);
         if (path.length > 0) {
           // If found a path that the boat can take
           let boat = createBoat(sx, sy);
@@ -542,7 +543,7 @@ function cellToCoord(x, y) {
 }
 
 function placeAnimalOverCell(x, y, animal) {
-  let [xCoord, yCoord] = cellToCoord(x, y);
+  const [xCoord, yCoord] = cellToCoord(x, y);
   animal.left = xCoord + Math.floor(Math.random() * 3);
   animal.top = yCoord + Math.floor(Math.random() * 3);
   animal.style.left = animal.left + "px";
@@ -574,7 +575,7 @@ function farmLocations() {
  */
 function spawnAnimals() {
   if (0.05 >= Math.random()) {
-    let [x, y] = selectRandomLocation(farmLocations());
+    const [x, y] = selectRandomLocation(farmLocations());
     if (x != null) {
       let animal = document.createElement("div");
       animal.classList = "sheep";
@@ -600,7 +601,7 @@ function cellIs(x, y, cellType) {
 }
 
 function moveUp(animal) {
-  let [x, y] = coordsToCell(animal.left, animal.top - animalBuffer);
+  const [x, y] = coordsToCell(animal.left, animal.top - animalBuffer);
   if (grid[y][x].cellType == "grass") {
     animal.top = animal.top - animalMovement;
     animal.style.top = animal.top + "px";
@@ -610,7 +611,7 @@ function moveUp(animal) {
 }
 
 function moveDown(animal) {
-  let [x, y] = coordsToCell(animal.left, animal.top + 5 + animalBuffer, );
+  const [x, y] = coordsToCell(animal.left, animal.top + 5 + animalBuffer, );
   if (grid[y][x].cellType == "grass") {
     animal.top = animal.top + animalMovement;
     animal.style.top = animal.top + "px";
@@ -630,7 +631,7 @@ function moveLeft(animal) {
 }
 
 function moveRight(animal) {
-  let [x, y] = coordsToCell(animal.left + 5 + animalBuffer, animal.top);
+  const [x, y] = coordsToCell(animal.left + 5 + animalBuffer, animal.top);
   if (grid[y][x].cellType == "grass") {
     animal.left = animal.left + animalMovement;
     animal.style.left = animal.left + "px";
@@ -652,7 +653,7 @@ function moveRight(animal) {
 function moveAnimals() {
   for (let i = 0, n = animals.length; i < n; i++) {
     if (0.5 >= Math.random()) {
-      let r = rand1toN(4);
+      const r = rand1toN(4);
       let animal = animals[i];
       if (r == 1 && animal.avoidDirection != 1) {
         if (!moveDown(animal)) {
@@ -698,10 +699,10 @@ function grassForestLocations() {
  */
 function growForest() {
   if (0.1 >= Math.random()) {
-    let locations = grassForestLocations();
+    const locations = grassForestLocations();
     if (locations.length > 0) {
       // Pick a random grass location and change it to be a forest cell
-      let [x, y] = locations[Math.floor(Math.random() * locations.length)];
+      const [x, y] = locations[Math.floor(Math.random() * locations.length)];
       grid[y][x].className = "cell forest-" + rand1toN(5);
       grid[y][x].cellType = "forest";
     }
@@ -711,8 +712,8 @@ function growForest() {
 }
 
 
-let w = 180;
-let h = 110;
+const w = 180;
+const h = 110;
 let currentObj = "road";
 let mouseDown = false;
 let fillMode = false;
