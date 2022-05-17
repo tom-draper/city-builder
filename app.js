@@ -111,6 +111,7 @@ function setCurrentObj(obj) {
 function toggleFill() {
     fillMode = !fillMode;
     document.getElementById("fill-btn").classList.toggle("active");
+    document.getElementById("fill-active").classList.toggle("fill-inactive");
 }
 function createArray2(length) {
     var arr = new Array(length || 0);
@@ -301,7 +302,7 @@ function drive(car, step, path) {
     }
 }
 function roadNetwork() {
-    var network = createArray(h, w); // Road network is flipped vs grid for the A* implementation
+    var network = createArray(w, h); // Road network is flipped vs grid for the A* implementation
     for (var y = 0; y < h; y++) {
         for (var x = 0; x < w; x++) {
             if (grid[y][x].type == "road") {
@@ -358,7 +359,7 @@ function tryCarDrive() {
     setTimeout(tryCarDrive, 500);
 }
 function cellTypeMask(cellType) {
-    var network = createArray(h, w); // Road network is flipped vs grid for the A* implementation
+    var network = createArray(w, h); // Road network is flipped vs grid for the A* implementation
     for (var y = 0; y < h; y++) {
         for (var x = 0; x < w; x++) {
             if (grid[y][x].type == cellType) {
@@ -498,8 +499,10 @@ function sail(boat, step, path, destroyBoat) {
  * or returning home and removed from the map.
  */
 function tryGoFishing() {
+    console.log("running");
     var startLocations = boatSpawnLocations();
-    var p = Math.min(startLocations.length * 0.0002, 1);
+    // const p = Math.min(startLocations.length * 0.0002, 1);
+    var p = Math.min(startLocations.length * 0.01, 1);
     if (p >= Math.random()) {
         var _a = selectRandomLocation(startLocations), sx = _a[0], sy = _a[1];
         if (sx != null && sy != null) {
@@ -510,7 +513,9 @@ function tryGoFishing() {
                 var start = graph.grid[sx][sy];
                 var finish = graph.grid[fx][fy];
                 var path = astar.search(graph, start, finish);
+                console.log(path);
                 if (path.length > 0) {
+                    console.log("Spawning fishing boat");
                     // If found a path that the boat can take
                     var boat = createBoat(sx, sy);
                     sail(boat, 1, path, false);

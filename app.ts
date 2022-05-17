@@ -82,6 +82,7 @@ function setCurrentObj(obj: string) {
 function toggleFill() {
   fillMode = !fillMode;
   document.getElementById("fill-btn").classList.toggle("active");
+  document.getElementById("fill-active").classList.toggle("fill-inactive");
 }
 
 function createArray2(length: number): any[][] {
@@ -311,7 +312,7 @@ function drive(car: HTMLDivElement, step: number, path: any[]) {
 }
 
 function roadNetwork(): number[][] {
-  let network = createArray(h, w); // Road network is flipped vs grid for the A* implementation
+  let network = createArray(w, h); // Road network is flipped vs grid for the A* implementation
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -358,9 +359,9 @@ function tryCarDrive() {
 
       if (fx != null && fy != null) {
         let graph = new Graph(roadNetwork());
-        let start = graph.grid[sx][sy];
-        let finish = graph.grid[fx][fy];
-        let path = astar.search(graph, start, finish);
+        const start = graph.grid[sx][sy];
+        const finish = graph.grid[fx][fy];
+        const path = astar.search(graph, start, finish);
         if (path.length > 0) {
           // If found a path that the car can take
           let car = createCar(sx, sy);
@@ -375,7 +376,7 @@ function tryCarDrive() {
 }
 
 function cellTypeMask(cellType: string): number[][] {
-  let network = createArray(h, w); // Road network is flipped vs grid for the A* implementation
+  let network = createArray(w, h); // Road network is flipped vs grid to match the A* implementation
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -534,9 +535,11 @@ function sail(boat: Boat, step: number, path: any[], destroyBoat: boolean) {
  * or returning home and removed from the map.
  */
 function tryGoFishing() {
+  console.log("running");
   const startLocations = boatSpawnLocations();
 
-  const p = Math.min(startLocations.length * 0.0002, 1);
+  // const p = Math.min(startLocations.length * 0.0002, 1);
+  const p = Math.min(startLocations.length * 0.01, 1);
   if (p >= Math.random()) {
     const [sx, sy] = selectRandomLocation(startLocations);
 
@@ -546,10 +549,12 @@ function tryGoFishing() {
 
       if (fx != null && fy != null) {
         let graph = new Graph(cellTypeMask("water"));
-        let start = graph.grid[sx][sy];
-        let finish = graph.grid[fx][fy];
-        let path = astar.search(graph, start, finish);
+        const start = graph.grid[sx][sy];
+        const finish = graph.grid[fx][fy];
+        const path = astar.search(graph, start, finish);
+        console.log(path);
         if (path.length > 0) {
+          console.log("Spawning fishing boat")
           // If found a path that the boat can take
           let boat = createBoat(sx, sy);
           sail(boat, 1, path, false);
