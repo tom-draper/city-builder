@@ -37,29 +37,32 @@ async function applyObj(x, y) {
   grid[y][x].cellType = currentObj;
 }
 
-async function fill(cell, cellType) {
-  let x = cell.x;
-  let y = cell.y;
-  if (cell.cellType == cellType) {
+async function fill(cell, targetCellType) {
+  if (cell.cellType == targetCellType) {
+    let x = cell.x;
+    let y = cell.y;
     await applyObj(x, y);
     if (y < h - 1) {
-      fill(grid[y + 1][x], cellType);
+      fill(grid[y + 1][x], targetCellType);
     }
     if (x < w - 1) {
-      fill(grid[y][x + 1], cellType);
+      fill(grid[y][x + 1], targetCellType);
     }
     if (y > 0) {
-      fill(grid[y - 1][x], cellType);
+      fill(grid[y - 1][x], targetCellType);
     }
     if (x > 0) {
-      fill(grid[y][x - 1], cellType);
+      fill(grid[y][x - 1], targetCellType);
     }
   }
 }
 
 async function turnCellToObj(cell) {
   if (fillMode) {
-    fill(cell, cell.cellType);
+    if (cell.cellType != currentObj) {
+      console.log("Filling");
+      fill(cell, cell.cellType);
+    }
   } else {
     let [objWidth, objHeight] = objSize(currentObj);
     for (let y = 0; y < objHeight; y++) {
@@ -101,7 +104,7 @@ function createGrid() {
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       let cell = document.createElement("div");
-      cell.classList = "cell neutral ";
+      cell.className = "cell neutral ";
       cell.cellType = "neutral";
       cell.x = x;
       cell.y = y;
@@ -312,7 +315,7 @@ function roadNetwork() {
 
 function createCar(x, y) {
   let car = document.createElement("div");
-  car.classList = "car car-" + rand1toN(6);
+  car.className = "car car-" + rand1toN(6);
   car.style.left = (x * 8) + "px";
   car.style.top = (y * 8) + "px";
   document.getElementById("canvas").appendChild(car);
@@ -422,7 +425,7 @@ function boatSpawnLocations() {
 
 function createBoat(x, y) {
   let boat = document.createElement("div");
-  boat.classList = "boat";
+  boat.className = "boat";
   boat.style.left = (x * 8) + "px";
   boat.style.top = (y * 8) + "px";
   boat.spawnX = x;
@@ -577,7 +580,7 @@ function spawnAnimals() {
     let [x, y] = selectRandomLocation(farmLocations());
     if (x != null) {
       let animal = document.createElement("div");
-      animal.classList = "sheep";
+      animal.className = "sheep";
       // avoidDirection attribute to skip travelling in direction of last failed
       // move (gradually move away from obstacles)
       animal.avoidDirection = null;
