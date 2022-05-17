@@ -598,7 +598,22 @@ type Animal = {
   div: HTMLDivElement,
   left: number|null,
   top: number|null,
-  avoidDirection: number|null
+  avoidDirection: number|null,
+}
+
+function createAnimal(): Animal {
+  let animal: Animal = {
+    div: document.createElement("div"),
+    top: null,
+    left: null,
+    avoidDirection: null,
+  }
+  if (Math.round(Math.random())) {
+    animal.div.className = "sheep";
+  } else {
+    animal.div.className = "cow";
+  }
+  return animal;
 }
 
 /*
@@ -612,13 +627,7 @@ function spawnAnimals() {
   if (0.05 >= Math.random()) {
     const [x, y] = selectRandomLocation(farmLocations());
     if (x != null && y != null) {
-      let animal: Animal = {
-        div: document.createElement("div"),
-        top: null,
-        left: null,
-        avoidDirection: null,
-      }
-      animal.div.className = "sheep";
+      let animal = createAnimal(); 
       placeAnimalOverCell(x, y, animal);
       animals.push(animal);
       document.getElementById("canvas").appendChild(animal.div);

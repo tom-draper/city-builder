@@ -224,12 +224,18 @@ button {
     background-color: #5E503B;
 }
 
-.sheep {
+.sheep,
+.cow {
     width: 5px;
     height: 5px;
     position: absolute;
-    background-color: #F0E9D1;
     z-index: 5;
+}
+.sheep {
+    background-color: #F0E9D1;
+}
+.cow {
+    background-color: rgb(49, 4, 4);
 }
 
 .car {

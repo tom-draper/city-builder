@@ -359,7 +359,7 @@ function tryCarDrive() {
     setTimeout(tryCarDrive, 500);
 }
 function cellTypeMask(cellType) {
-    var network = createArray(w, h); // Road network is flipped vs grid for the A* implementation
+    var network = createArray(w, h); // Road network is flipped vs grid to match the A* implementation
     for (var y = 0; y < h; y++) {
         for (var x = 0; x < w; x++) {
             if (grid[y][x].type == cellType) {
@@ -549,6 +549,21 @@ function farmLocations() {
     }
     return locations;
 }
+function createAnimal() {
+    var animal = {
+        div: document.createElement("div"),
+        top: null,
+        left: null,
+        avoidDirection: null
+    };
+    if (Math.round(Math.random())) {
+        animal.div.className = "sheep";
+    }
+    else {
+        animal.div.className = "cow";
+    }
+    return animal;
+}
 /*
  * Runs intermittently.
  * 5% probability of executing.
@@ -560,13 +575,7 @@ function spawnAnimals() {
     if (0.05 >= Math.random()) {
         var _a = selectRandomLocation(farmLocations()), x = _a[0], y = _a[1];
         if (x != null && y != null) {
-            var animal = {
-                div: document.createElement("div"),
-                top: null,
-                left: null,
-                avoidDirection: null
-            };
-            animal.div.className = "sheep";
+            var animal = createAnimal();
             placeAnimalOverCell(x, y, animal);
             animals.push(animal);
             document.getElementById("canvas").appendChild(animal.div);
