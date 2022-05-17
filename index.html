@@ -14,25 +14,30 @@
       <script type='text/javascript' src='astar.js'></script>
     </div>
     <div class="toolbar">
-      <div class="objects">
-        <button id='road-btn' onclick="setCurrentObj('road')" class="active">Road</button>
-        <button id='grass-btn' onclick="setCurrentObj('grass')">Grass</button>
-        <button id='water-btn' onclick="setCurrentObj('water')">Water</button>
-        <button id='sand-btn' onclick="setCurrentObj('sand')">Sand</button>
-        <button id='forest-btn' onclick="setCurrentObj('forest')">Forest</button>
-        <button id='house-btn' onclick="setCurrentObj('house')">House</button>
-        <button id='farm-btn' onclick="setCurrentObj('farm')">Farm</button>
-        <button id='supermarket-btn' onclick="setCurrentObj('supermarket')">Supermarket</button>
-        <button id='fishing-btn' onclick="setCurrentObj('fishing')">Fishing Hut</button>
-        <button id='hedge-btn' onclick="setCurrentObj('hedge')">Hedge</button>
-        <button id='fence-btn' onclick="setCurrentObj('fence')">Fence</button>
+      <div id="fill-active" class="fill-inactive">
+        Fill Active
       </div>
-      <div class="tools">
-        <button id="fill-btn" onclick="toggleFill()">Fill</button>
-        <button id='neutral-btn' onclick="setCurrentObj('neutral')">Eraser</button>
-      </div>
-      <div class="settings">
-        <a id="donate-btn" target="_blank" href="https://ko-fi.com/tomdraper">Donate</a>
+      <div class="buttons">
+        <div class="objects">
+          <button id='road-btn' onclick="setCurrentObj('road')" class="active">Road</button>
+          <button id='grass-btn' onclick="setCurrentObj('grass')">Grass</button>
+          <button id='water-btn' onclick="setCurrentObj('water')">Water</button>
+          <button id='sand-btn' onclick="setCurrentObj('sand')">Sand</button>
+          <button id='forest-btn' onclick="setCurrentObj('forest')">Forest</button>
+          <button id='house-btn' onclick="setCurrentObj('house')">House</button>
+          <button id='farm-btn' onclick="setCurrentObj('farm')">Farm</button>
+          <button id='supermarket-btn' onclick="setCurrentObj('supermarket')">Supermarket</button>
+          <button id='fishing-btn' onclick="setCurrentObj('fishing')">Fishing Hut</button>
+          <button id='hedge-btn' onclick="setCurrentObj('hedge')">Hedge</button>
+          <button id='fence-btn' onclick="setCurrentObj('fence')">Fence</button>
+        </div>
+        <div class="tools">
+          <button id="fill-btn" onclick="toggleFill()">Fill</button>
+          <button id='neutral-btn' onclick="setCurrentObj('neutral')">Eraser</button>
+        </div>
+        <div class="settings">
+          <a id="donate-btn" target="_blank" href="https://ko-fi.com/tomdraper">Donate</a>
+        </div>
       </div>
     </div>
   </div>
