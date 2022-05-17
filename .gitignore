@@ -1,4 +1,4 @@
 .jshintrc
-app.ts
-new_app.ts
-a.js
+other
+tsconfig.json
+package.json
