@@ -1,9 +1,9 @@
 # City-Builder
 A browser-based pixel city builder game.
 
-Run index.html in a browser to run locally.
-
 Available at: https://tom-draper.github.io/City-Builder/
+
+Run index.html in a browser to run locally.
 
 ### Includes:
 - Animated water
