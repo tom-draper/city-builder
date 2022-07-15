@@ -1,7 +1,10 @@
 # City-Builder
+
 A browser-based pixel city builder game.
 
 Available at: https://tom-draper.github.io/city-builder/
+
+
 
 Run <code>index.html</code> in a browser to run locally.
 
@@ -10,7 +13,9 @@ Run <code>index.html</code> in a browser to run locally.
 - [X] Travelling cars
 - [X] Meandering animals
 - [X] Fishing boats
+- [ ] Airports and planes
 - [ ] Time + changing seasons
+- [ ] Points system
 
 <br>
 
