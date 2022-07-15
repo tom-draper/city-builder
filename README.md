@@ -22,6 +22,7 @@ Run <code>index.html</code> in a browser to run locally.
 - [X] Fishing boats
 - [ ] Airports and planes
 - [ ] Time + changing seasons
+- [ ] Points system
 
 <br>
 
