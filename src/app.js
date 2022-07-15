@@ -626,7 +626,6 @@ function sail(boat, step, path, destroyBoat) {
  * or returning home and removed from the map.
  */
 function tryGoFishing() {
-  console.log("running");
   var startLocations = boatSpawnLocations();
   // const p = Math.min(startLocations.length * 0.0002, 1);
   var p = Math.min(startLocations.length * 0.01, 1);

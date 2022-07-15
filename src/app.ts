@@ -1,8 +1,8 @@
-
-
 function turnDraggedCellToObj() {
   if (mouseDown) {
-    turnCellToObj(document.elementFromPoint(window.event.clientX, window.event.clientY));
+    turnCellToObj(
+      document.elementFromPoint(window.event.clientX, window.event.clientY)
+    );
   }
 }
 
@@ -26,7 +26,11 @@ function applyObj(x: number, y: number) {
     if (!waterPlaced) {
       waterPlaced = true; // Begin animation
     }
-  } else if (currentObj == "grass" || currentObj == "sand" || currentObj == "forest") {
+  } else if (
+    currentObj == "grass" ||
+    currentObj == "sand" ||
+    currentObj == "forest"
+  ) {
     objClass = currentObj + "-" + rand1toN(5);
   } else if (currentObj == "hedge") {
     objClass = currentObj + "-" + rand1toN(3);
@@ -97,7 +101,7 @@ function createArray2(length: number): any[][] {
 }
 
 function createArray(h: number, w: number): any[][] {
-  return new Array(h).fill(null).map(()=>new Array(w).fill(null));
+  return new Array(h).fill(null).map(() => new Array(w).fill(null));
 }
 
 interface Cell extends HTMLDivElement {
@@ -109,10 +113,10 @@ interface Cell extends HTMLDivElement {
 function createCell(x: number, y: number): Cell {
   let cell: Cell = document.createElement("div");
   cell.className = "cell neutral ";
-  cell.type = "neutral"
+  cell.type = "neutral";
   cell.x = x;
   cell.y = y;
-  return cell
+  return cell;
 }
 
 function createGrid() {
@@ -134,11 +138,7 @@ function createGrid() {
         },
         false
       );
-      cell.addEventListener(
-        "mousemove", 
-        turnDraggedCellToObj, 
-        false
-      );
+      cell.addEventListener("mousemove", turnDraggedCellToObj, false);
       cell.addEventListener(
         "mouseup",
         function () {
@@ -183,11 +183,11 @@ function animateWater() {
 
 function neighbourIs(x: number, y: number, obj: string): boolean {
   return (
-    (x < w - 1 && grid[y][x + 1].type == obj) || 
-    (x > 0 && grid[y][x - 1].type == obj) || 
-    (y < h - 1 && grid[y + 1][x].type == obj) || 
+    (x < w - 1 && grid[y][x + 1].type == obj) ||
+    (x > 0 && grid[y][x - 1].type == obj) ||
+    (y < h - 1 && grid[y + 1][x].type == obj) ||
     (y > 0 && grid[y - 1][x].type == obj)
-  )
+  );
 }
 
 function onEdge(x: number, y: number): boolean {
@@ -215,7 +215,7 @@ function driveLocations(): number[][] {
   return locations;
 }
 
-function selectRandomLocation(locations: number[][]): number[]|null[] {
+function selectRandomLocation(locations: number[][]): number[] | null[] {
   if (locations.length > 0) {
     return locations[Math.floor(Math.random() * locations.length)];
   } else {
@@ -227,7 +227,12 @@ function distance(x1: number, y1: number, x2: number, y2: number): number {
   return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
 }
 
-function filterByDistance(startx: number, starty: number, locations: number[][], maxd: number): number[][] {
+function filterByDistance(
+  startx: number,
+  starty: number,
+  locations: number[][],
+  maxd: number
+): number[][] {
   let filteredLocations = [];
   for (let i = 0, n = locations.length; i < n; i++) {
     const [x, y] = locations[i];
@@ -240,7 +245,11 @@ function filterByDistance(startx: number, starty: number, locations: number[][],
 
 function indexOfNode(arr: any[][], value: any[]): number {
   for (let i = 0, n = arr.length; i < n; i++) {
-    if (arr[i][0] == value[0] && arr[i][1] == value[1] && arr[i][2] == value[2]) {
+    if (
+      arr[i][0] == value[0] &&
+      arr[i][1] == value[1] &&
+      arr[i][2] == value[2]
+    ) {
       return i;
     }
   }
@@ -259,7 +268,13 @@ function onGrid(x: number, y: number): boolean {
   return x >= 0 && x < w && y >= 0 && y < h;
 }
 
-async function smoothMove(object: HTMLDivElement, currentX: number, currentY: number, targetX: number, targetY: number) {
+async function smoothMove(
+  object: HTMLDivElement,
+  currentX: number,
+  currentY: number,
+  targetX: number,
+  targetY: number
+) {
   let nextX = currentX;
   const diffX = targetX - currentX;
   if (diffX > 0) {
@@ -267,7 +282,7 @@ async function smoothMove(object: HTMLDivElement, currentX: number, currentY: nu
   } else if (diffX < 0) {
     nextX -= 4;
   }
-  
+
   let nextY = currentY;
   const diffY = targetY - currentY;
   if (diffY > 0) {
@@ -275,8 +290,8 @@ async function smoothMove(object: HTMLDivElement, currentX: number, currentY: nu
   } else if (diffY < 0) {
     nextY -= 4;
   }
-  object.style.left = nextX + 'px';
-  object.style.top = nextY + 'px';
+  object.style.left = nextX + "px";
+  object.style.top = nextY + "px";
 
   if (nextX != targetX || nextY != targetY) {
     setTimeout(function () {
@@ -287,18 +302,18 @@ async function smoothMove(object: HTMLDivElement, currentX: number, currentY: nu
 
 /*
  * Runs intermittently.
- * Moves the car div along its input path with each run until it reaches the 
+ * Moves the car div along its input path with each run until it reaches the
  * final location and the car is removed from the canvas.
  */
 function drive(car: HTMLDivElement, step: number, path: any[]) {
   if (step < path.length) {
-    car.style.left = (path[step].x * 8) + "px";
-    car.style.top = (path[step].y * 8) + "px";
+    car.style.left = path[step].x * 8 + "px";
+    car.style.top = path[step].y * 8 + "px";
     // smoothMove(
-    //   car, 
-    //   path[step-1].x * 8, 
-    //   path[step-1].y * 8, 
-    //   path[step].x * 8, 
+    //   car,
+    //   path[step-1].x * 8,
+    //   path[step-1].y * 8,
+    //   path[step].x * 8,
     //   path[step].y * 8
     // );
 
@@ -329,8 +344,8 @@ function roadNetwork(): number[][] {
 function createCar(x: number, y: number): HTMLDivElement {
   let car = document.createElement("div");
   car.className = "car car-" + rand1toN(6);
-  car.style.left = (x * 8) + "px";
-  car.style.top = (y * 8) + "px";
+  car.style.left = x * 8 + "px";
+  car.style.top = y * 8 + "px";
   document.getElementById("canvas").appendChild(car);
   return car;
 }
@@ -343,8 +358,8 @@ function createCar(x: number, y: number): HTMLDivElement {
  * supermarket, farm, outside of the canvas.
  * From this possible spawn points a random start and finish point is selected.
  * The A* algorithm is used to find the shortest path between these points, only
- * using road cells. If a path is found, the car is created and begins its 
- * journey. 
+ * using road cells. If a path is found, the car is created and begins its
+ * journey.
  */
 function tryCarDrive() {
   const startLocations = driveLocations();
@@ -355,7 +370,9 @@ function tryCarDrive() {
 
     if (sx != null && sy != null) {
       const finishLocations = driveLocations();
-      const [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 10));
+      const [fx, fy] = selectRandomLocation(
+        filterByDistance(sx, sy, finishLocations, 10)
+      );
 
       if (fx != null && fy != null) {
         let graph = new Graph(roadNetwork());
@@ -394,8 +411,8 @@ function surroundedBy(x: number, y: number, obj: string): boolean {
   if (x < 1 || y < 1 || x > w - 2 || y > h - 2) {
     return false;
   } else if (
-    grid[y][x + 1].type != obj || 
-    grid[y][x - 1].type != obj || 
+    grid[y][x + 1].type != obj ||
+    grid[y][x - 1].type != obj ||
     grid[y + 1][x].type != obj ||
     grid[y - 1][x].type != obj ||
     grid[y - 1][x - 1].type != obj ||
@@ -413,8 +430,8 @@ function fishingLocations(currentX: number, currentY: number): number[][] {
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       if (
-        grid[y][x].type == "water" && 
-        surroundedBy(x, y, "water") && 
+        grid[y][x].type == "water" &&
+        surroundedBy(x, y, "water") &&
         distance(x, y, currentX, currentY) > 2
       ) {
         locations.push([x, y]);
@@ -437,20 +454,20 @@ function boatSpawnLocations(): number[][] {
 }
 
 type Boat = {
-  div: HTMLDivElement,
-  spawnX: number,
-  spawnY: number
-}
+  div: HTMLDivElement;
+  spawnX: number;
+  spawnY: number;
+};
 
 function createBoat(x: number, y: number): Boat {
   let boat: Boat = {
     div: document.createElement("div"),
     spawnX: x,
-    spawnY: y
-  }
+    spawnY: y,
+  };
   boat.div.className = "boat";
-  boat.div.style.left = (x * 8) + "px";
-  boat.div.style.top = (y * 8) + "px";
+  boat.div.style.left = x * 8 + "px";
+  boat.div.style.top = y * 8 + "px";
 
   document.getElementById("canvas").appendChild(boat.div);
   return boat;
@@ -472,7 +489,9 @@ function nextFishingLocation(boat: Boat) {
   if (0.8 >= Math.random()) {
     // Find a new fishing location and move to it
     const finishLocations = fishingLocations(sx, sy);
-    const [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
+    const [fx, fy] = selectRandomLocation(
+      filterByDistance(sx, sy, finishLocations, 2)
+    );
 
     if (fx != null && fy != null) {
       const finish = graph.grid[fx][fy];
@@ -495,15 +514,15 @@ function nextFishingLocation(boat: Boat) {
 
 /*
  * Runs intermittently.
- * Moves the boat div along its input path with each run until it reaches the 
+ * Moves the boat div along its input path with each run until it reaches the
  * final location. The boat then waits for a random amount of time before
  * sailing to a new location or returning to its original spawn point and
  * despawning.
  */
 function sail(boat: Boat, step: number, path: any[], destroyBoat: boolean) {
   if (step < path.length) {
-    boat.div.style.left = (path[step].x * 8) + "px";
-    boat.div.style.top = (path[step].y * 8) + "px";
+    boat.div.style.left = path[step].x * 8 + "px";
+    boat.div.style.top = path[step].y * 8 + "px";
 
     setTimeout(function () {
       sail(boat, step + 1, path, destroyBoat);
@@ -525,17 +544,16 @@ function sail(boat: Boat, step: number, path: any[], destroyBoat: boolean) {
  * Probability of executing grows from 0.02% to a maximum of 100% depending on
  * the number of existing boat spawn points. Boat spawn points include any
  * water cell that has at least one of its four neighbouring cells as a fishing
- * hut. Fishing locatiosn are water cells that are also surrounded by water cells. 
+ * hut. Fishing locatiosn are water cells that are also surrounded by water cells.
  * A random boat spawn point is selected as the starting location, and a random
  * fishing location is selected as the finishing location.
  * The A* algorithm is used to find the shortest path between these points, only
- * using water cells. If a path is found, the boat is created at the selected 
+ * using water cells. If a path is found, the boat is created at the selected
  * spawn point and sails to its fishing location. It then repeatedly waits for
  * a random amount of time followed by either: sailing to a new fishing location,
  * or returning home and removed from the map.
  */
 function tryGoFishing() {
-  console.log("running");
   const startLocations = boatSpawnLocations();
 
   // const p = Math.min(startLocations.length * 0.0002, 1);
@@ -545,7 +563,9 @@ function tryGoFishing() {
 
     if (sx != null && sy != null) {
       const finishLocations = fishingLocations(sx, sy);
-      const [fx, fy] = selectRandomLocation(filterByDistance(sx, sy, finishLocations, 2));
+      const [fx, fy] = selectRandomLocation(
+        filterByDistance(sx, sy, finishLocations, 2)
+      );
 
       if (fx != null && fy != null) {
         let graph = new Graph(cellTypeMask("water"));
@@ -554,7 +574,7 @@ function tryGoFishing() {
         const path = astar.search(graph, start, finish);
         console.log(path);
         if (path.length > 0) {
-          console.log("Spawning fishing boat")
+          console.log("Spawning fishing boat");
           // If found a path that the boat can take
           let boat = createBoat(sx, sy);
           sail(boat, 1, path, false);
@@ -595,11 +615,11 @@ function farmLocations() {
 }
 
 type Animal = {
-  div: HTMLDivElement,
-  left: number|null,
-  top: number|null,
-  avoidDirection: number|null,
-}
+  div: HTMLDivElement;
+  top: number | null;
+  left: number | null;
+  avoidDirection: number | null;
+};
 
 function createAnimal(): Animal {
   let animal: Animal = {
@@ -607,7 +627,7 @@ function createAnimal(): Animal {
     top: null,
     left: null,
     avoidDirection: null,
-  }
+  };
   if (Math.round(Math.random())) {
     animal.div.className = "sheep";
   } else {
@@ -619,15 +639,15 @@ function createAnimal(): Animal {
 /*
  * Runs intermittently.
  * 5% probability of executing.
- * A random grass cell that has a farm cell as at least one of its four 
- * neighbours is selected. An animal div is created and placed at a random 
+ * A random grass cell that has a farm cell as at least one of its four
+ * neighbours is selected. An animal div is created and placed at a random
  * location within this cell.
  */
 function spawnAnimals() {
   if (0.05 >= Math.random()) {
     const [x, y] = selectRandomLocation(farmLocations());
     if (x != null && y != null) {
-      let animal = createAnimal(); 
+      let animal = createAnimal();
       placeAnimalOverCell(x, y, animal);
       animals.push(animal);
       document.getElementById("canvas").appendChild(animal.div);
@@ -657,7 +677,7 @@ function moveUp(animal: Animal): boolean {
 }
 
 function moveDown(animal: Animal): boolean {
-  const [x, y] = coordsToCell(animal.left, animal.top + 5 + animalBuffer, );
+  const [x, y] = coordsToCell(animal.left, animal.top + 5 + animalBuffer);
   if (grid[y][x].type == "grass") {
     animal.top = animal.top + animalMovement;
     animal.div.style.top = animal.top + "px";
@@ -688,11 +708,11 @@ function moveRight(animal: Animal): boolean {
 
 /*
  * Runs intermittently.
- * Each animal has an 50% chance of moving, independent from owhether other 
+ * Each animal has an 50% chance of moving, independent from owhether other
  * animals move.
  * One of the four moving directions is selected randomly. The animal attempts
- * to move in this direction. If the move fails (i.e. the new location is not a 
- * grass cell), the animal remembers not to move in this direction again (until 
+ * to move in this direction. If the move fails (i.e. the new location is not a
+ * grass cell), the animal remembers not to move in this direction again (until
  * another failed move occurs and that direction is replaced). This has the
  * effect if gradually moving the animal away from any obsticles it encounters.
  */
@@ -740,7 +760,7 @@ function grassForestLocations() {
  * Runs intermittently.
  * 10% probability of executing.
  * Finds all cells of grass with at least one of its four neighbouring cells
- * a forest cell. Selects one of these cells randomly and changes it into a 
+ * a forest cell. Selects one of these cells randomly and changes it into a
  * forest cell.
  */
 function growForest() {
@@ -757,7 +777,6 @@ function growForest() {
   setTimeout(growForest, 100000);
 }
 
-
 let w = 180;
 let h = 110;
 let currentObj = "road";
@@ -765,7 +784,7 @@ let mouseDown = false;
 let fillMode = false;
 let waterPlaced = false;
 let nCars = 0;
-let animals: Animal[] = []; 
+let animals: Animal[] = [];
 let animalMovement = 2;
 let animalBuffer = 6;
 

@@ -9,7 +9,7 @@
 
 body {
     margin: 0;
-    background-color: rgb(181, 181, 181);
+    background-color: rgb(172, 172, 172);
 }
 
 #main {
@@ -23,7 +23,7 @@ body {
     width: max-content;
     place-content: center;
     position: relative;
-    box-shadow: 10px 10px 8px #888888;
+    box-shadow: 10px 10px 8px #777777;
     margin: 30px auto auto auto;
 }
 
@@ -35,7 +35,7 @@ body {
 
 }
 .buttons {
-    background-color: rgb(164, 164, 164);
+    background-color: #173380;
     width: 100%;
     height: 50px;
     display: flex;
@@ -60,6 +60,7 @@ body {
 }
 .tools {
     display: flex;
+    margin-right: 8px;
 }
 .settings {
     height: 50px;
