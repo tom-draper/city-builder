@@ -5,10 +5,12 @@ Available at: https://tom-draper.github.io/City-Builder/
 
 Run <code>index.html</code> in a browser to run locally.
 
-### Includes:
+### Includes
 - Animated water
 - Travelling cars
 - Meandering animals
 - Fishing boats
+
+<br>
 
 ![City](https://user-images.githubusercontent.com/41476809/147494587-6a85ae90-aca4-4967-90cf-bfba77e694e5.png)
