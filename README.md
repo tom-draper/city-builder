@@ -2,9 +2,7 @@
 
 A browser-based pixel city builder game.
 
-Available at: https://tom-draper.github.io/city-builder/
-
-
+Hosted at: https://tom-draper.github.io/city-builder/
 
 Run <code>index.html</code> in a browser to run locally.
 
