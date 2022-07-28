@@ -4,7 +4,7 @@ A browser-based pixel city builder game.
 
 Hosted at: https://tom-draper.github.io/city-builder/
 
-Run <code>index.html</code> in a browser to run locally.
+To run locally, open <code>index.html</code> in a browser.
 
 ### Features
 - [X] Animated water
