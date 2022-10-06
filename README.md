@@ -7,13 +7,13 @@ Hosted at: https://tom-draper.github.io/city-builder/
 To run locally, compile all <code>.ts</code> files in <code>/src</code> and open <code>index.html</code> in a browser.
 
 ### Features
-- [X] Animated water
 - [X] Travelling cars
 - [X] Meandering animals
 - [X] Fishing boats
+- [X] Animated water
 - [ ] Airports and planes
 - [ ] Time + changing seasons
-- [ ] Points system
+- [ ] Points system based on population growth
 
 <br>
 
