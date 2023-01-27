@@ -602,7 +602,7 @@ function farmBorder(x: number, y: number): boolean {
     return grid[y][x].type == "grass" && neighbourIs(x, y, "farm");
 }
 
-function farmLocations() {
+function farmLocations(): number[][] {
     let locations = [];
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
@@ -616,9 +616,9 @@ function farmLocations() {
 
 type Animal = {
     div: HTMLDivElement;
-    top: number | null;
-    left: number | null;
-    avoidDirection: number | null;
+    top: number;
+    left: number;
+    avoidDirection: number;
 };
 
 function createAnimal(): Animal {
@@ -777,8 +777,8 @@ function growForest() {
     setTimeout(growForest, 100000);
 }
 
-let w = 180;
-let h = 110;
+let w = 170;
+let h = 100;
 let currentObj = "road";
 let mouseDown = false;
 let fillMode = false;
