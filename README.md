@@ -1,19 +1,19 @@
 # City-Builder
 
-A browser-based pixel city builder game.
+A browser-based pixel city builder game. Build roads, housing, parks, shops, forests and farms pixel-by-pixel and watch your creation slowly come to life with a busy population.
 
 Hosted at: https://tom-draper.github.io/city-builder/
 
-To run locally, compile all <code>.ts</code> files in <code>src</code> and open <code>index.html</code> in a browser.
+To run locally, compile all <code>.ts</code> files in <code>/src</code> and open <code>index.html</code> in a browser.
 
 ### Features
-- [X] Animated water
 - [X] Travelling cars
 - [X] Meandering animals
 - [X] Fishing boats
+- [X] Animated water
 - [ ] Airports and planes
 - [ ] Time + changing seasons
-- [ ] Points system
+- [ ] Points system based on population growth
 
 <br>
 
