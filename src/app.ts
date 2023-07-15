@@ -21,15 +21,15 @@ function rand1toN(upTo: number): number {
 function applyObj(x: number, y: number) {
     let objClass = currentObj;
 
-    if (currentObj == "water") {
+    if (currentObj === "water") {
         objClass = "water-" + rand1toN(3);
         if (!waterPlaced) {
             waterPlaced = true; // Begin animation
         }
     } else if (
-        currentObj == "grass" ||
-        currentObj == "sand" ||
-        currentObj == "forest"
+        currentObj === "grass" ||
+        currentObj === "sand" ||
+        currentObj === "forest"
     ) {
         objClass = currentObj + "-" + rand1toN(5);
     } else if (currentObj == "hedge") {
@@ -85,8 +85,8 @@ function setCurrentObj(obj: string) {
 
 function toggleFill() {
     fillMode = !fillMode;
-    document.getElementById("fill-btn").classList.toggle("active");
-    document.getElementById("fill-active").classList.toggle("fill-inactive");
+    document.getElementById("fill-btn")?.classList.toggle("active");
+    document.getElementById("fill-active")?.classList.toggle("fill-inactive");
 }
 
 function createArray2(length: number): any[][] {
@@ -111,7 +111,7 @@ interface Cell extends HTMLDivElement {
 }
 
 function createCell(x: number, y: number): Cell {
-    let cell: Cell = document.createElement("div");
+    let cell = document.createElement("div") as Cell;
     cell.className = "cell neutral ";
     cell.type = "neutral";
     cell.x = x;
@@ -119,9 +119,12 @@ function createCell(x: number, y: number): Cell {
     return cell;
 }
 
-function createGrid() {
+function createGrid(): Cell[][] {
     let grid = createArray(h, w);
     let canvas = document.getElementById("canvas");
+    if (canvas === null) {
+        return []
+    }
 
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
@@ -134,7 +137,7 @@ function createGrid() {
                 "mousedown",
                 function () {
                     mouseDown = true;
-                    turnCellToObj(this);
+                    turnCellToObj(this as Cell);
                 },
                 false
             );
@@ -152,7 +155,7 @@ function createGrid() {
     }
 
     // If mouse released outside of the canvas, reset mouseDown flag
-    document.getElementById("main").addEventListener(
+    document.getElementById("main")?.addEventListener(
         "mouseup",
         function () {
             mouseDown = false;
@@ -183,15 +186,15 @@ function animateWater() {
 
 function neighbourIs(x: number, y: number, obj: string): boolean {
     return (
-        (x < w - 1 && grid[y][x + 1].type == obj) ||
-        (x > 0 && grid[y][x - 1].type == obj) ||
-        (y < h - 1 && grid[y + 1][x].type == obj) ||
-        (y > 0 && grid[y - 1][x].type == obj)
+        (x < w - 1 && grid[y][x + 1].type === obj) ||
+        (x > 0 && grid[y][x - 1].type === obj) ||
+        (y < h - 1 && grid[y + 1][x].type === obj) ||
+        (y > 0 && grid[y - 1][x].type === obj)
     );
 }
 
 function onEdge(x: number, y: number): boolean {
-    return y == 0 || y == w - 1 || x == 0 || x == h - 1;
+    return y === 0 || y === w - 1 || x === 0 || x === h - 1;
 }
 
 function driveLocations(): number[][] {
@@ -246,9 +249,9 @@ function filterByDistance(
 function indexOfNode(arr: any[][], value: any[]): number {
     for (let i = 0, n = arr.length; i < n; i++) {
         if (
-            arr[i][0] == value[0] &&
-            arr[i][1] == value[1] &&
-            arr[i][2] == value[2]
+            arr[i][0] === value[0] &&
+            arr[i][1] === value[1] &&
+            arr[i][2] === value[2]
         ) {
             return i;
         }
@@ -322,7 +325,7 @@ function drive(car: HTMLDivElement, step: number, path: any[]) {
         }, 300);
     } else {
         nCars -= 1;
-        document.getElementById("canvas").removeChild(car);
+        document.getElementById("canvas")?.removeChild(car);
     }
 }
 
@@ -346,7 +349,7 @@ function createCar(x: number, y: number): HTMLDivElement {
     car.className = "car car-" + rand1toN(6);
     car.style.left = x * 8 + "px";
     car.style.top = y * 8 + "px";
-    document.getElementById("canvas").appendChild(car);
+    document.getElementById("canvas")?.appendChild(car);
     return car;
 }
 
@@ -397,7 +400,7 @@ function cellTypeMask(cellType: string): number[][] {
 
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-            if (grid[y][x].type == cellType) {
+            if (grid[y][x].type === cellType) {
                 network[x][y] = 1;
             } else {
                 network[x][y] = 0;
@@ -445,7 +448,7 @@ function boatSpawnLocations(): number[][] {
     let locations = [];
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-            if (grid[y][x].type == "water" && neighbourIs(x, y, "fishing")) {
+            if (grid[y][x].type === "water" && neighbourIs(x, y, "fishing")) {
                 locations.push([x, y]);
             }
         }
@@ -469,7 +472,7 @@ function createBoat(x: number, y: number): Boat {
     boat.div.style.left = x * 8 + "px";
     boat.div.style.top = y * 8 + "px";
 
-    document.getElementById("canvas").appendChild(boat.div);
+    document.getElementById("canvas")?.appendChild(boat.div);
     return boat;
 }
 
@@ -529,7 +532,7 @@ function sail(boat: Boat, step: number, path: any[], destroyBoat: boolean) {
         }, 1200);
     } else {
         if (destroyBoat) {
-            document.getElementById("canvas").removeChild(boat.div);
+            document.getElementById("canvas")?.removeChild(boat.div);
         } else {
             const fishingTime = rand1toN(500) * 1000;
             setTimeout(function () {
@@ -624,9 +627,9 @@ type Animal = {
 function createAnimal(): Animal {
     let animal: Animal = {
         div: document.createElement("div"),
-        top: null,
-        left: null,
-        avoidDirection: null,
+        top: 0,
+        left: 0,
+        avoidDirection: 0,
     };
     if (Math.round(Math.random())) {
         animal.div.className = "sheep";
@@ -650,7 +653,7 @@ function spawnAnimals() {
             let animal = createAnimal();
             placeAnimalOverCell(x, y, animal);
             animals.push(animal);
-            document.getElementById("canvas").appendChild(animal.div);
+            document.getElementById("canvas")?.appendChild(animal.div);
         }
     }
 
@@ -668,7 +671,7 @@ function cellIs(x: number, y: number, cellType: string): boolean {
 
 function moveUp(animal: Animal): boolean {
     const [x, y] = coordsToCell(animal.left, animal.top - animalBuffer);
-    if (grid[y][x].type == "grass") {
+    if (grid[y][x].type === "grass") {
         animal.top = animal.top - animalMovement;
         animal.div.style.top = animal.top + "px";
         return true;
@@ -678,7 +681,7 @@ function moveUp(animal: Animal): boolean {
 
 function moveDown(animal: Animal): boolean {
     const [x, y] = coordsToCell(animal.left, animal.top + 5 + animalBuffer);
-    if (grid[y][x].type == "grass") {
+    if (grid[y][x].type === "grass") {
         animal.top = animal.top + animalMovement;
         animal.div.style.top = animal.top + "px";
         return true;
@@ -688,7 +691,7 @@ function moveDown(animal: Animal): boolean {
 
 function moveLeft(animal: Animal): boolean {
     const [x, y] = coordsToCell(animal.left - animalBuffer, animal.top);
-    if (grid[y][x].type == "grass") {
+    if (grid[y][x].type === "grass") {
         animal.left = animal.left - animalMovement;
         animal.div.style.left = animal.left + "px";
         return true;
@@ -698,7 +701,7 @@ function moveLeft(animal: Animal): boolean {
 
 function moveRight(animal: Animal): boolean {
     const [x, y] = coordsToCell(animal.left + 5 + animalBuffer, animal.top);
-    if (grid[y][x].type == "grass") {
+    if (grid[y][x].type === "grass") {
         animal.left = animal.left + animalMovement;
         animal.div.style.left = animal.left + "px";
         return true;
@@ -721,19 +724,19 @@ function moveAnimals() {
         if (0.5 >= Math.random()) {
             const r = rand1toN(4);
             let animal = animals[i];
-            if (r == 1 && animal.avoidDirection != 1) {
+            if (r === 1 && animal.avoidDirection != 1) {
                 if (!moveDown(animal)) {
                     animal.avoidDirection = r;
                 }
-            } else if (r == 2 && animal.avoidDirection != 2) {
+            } else if (r === 2 && animal.avoidDirection != 2) {
                 if (!moveUp(animal)) {
                     animal.avoidDirection = r;
                 }
-            } else if (r == 3 && animal.avoidDirection != 3) {
+            } else if (r === 3 && animal.avoidDirection != 3) {
                 if (!moveLeft(animal)) {
                     animal.avoidDirection = r;
                 }
-            } else if (r == 4 && animal.avoidDirection != 4) {
+            } else if (r === 4 && animal.avoidDirection != 4) {
                 if (!moveRight(animal)) {
                     animal.avoidDirection = r;
                 }
@@ -748,7 +751,7 @@ function grassForestLocations() {
     let locations = [];
     for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-            if (grid[y][x].type == "grass" && neighbourIs(x, y, "forest")) {
+            if (grid[y][x].type === "grass" && neighbourIs(x, y, "forest")) {
                 locations.push([x, y]);
             }
         }
