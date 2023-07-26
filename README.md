@@ -4,7 +4,7 @@ A browser-based pixel city builder game. Build roads, housing, parks, shops, for
 
 Hosted at: https://tom-draper.github.io/city-builder/
 
-To run locally, compile all <code>.ts</code> files in <code>/src</code> and open <code>index.html</code> in a browser.
+To run locally, run <code>tsc</code> to compile all <code>.ts</code> files in <code>/src</code> and open <code>index.html</code> in a browser.
 
 ### Features
 - [X] Travelling cars
