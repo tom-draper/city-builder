@@ -1,6 +1,6 @@
 # City-Builder
 
-A browser-based pixel city builder game. Build roads, housing, parks, shops, forests and farms pixel-by-pixel and watch your creation slowly come to life with a busy population.
+A browser-based pixel city builder game. Build roads, housing, parks, shops, forests and farms pixel-by-pixel and watch your creation slowly come to life with an animated population.
 
 Hosted at: https://tom-draper.github.io/city-builder/
 
