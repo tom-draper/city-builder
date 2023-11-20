@@ -1,5 +1,2 @@
-.jshintrc
-other
-tsconfig.json
-package.json
-src/app.js
+node_modules
+build

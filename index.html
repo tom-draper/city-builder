@@ -1,46 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>City Builder</title>
-  <link href="styles/style.css" rel="stylesheet"/>
-</head>
-<body>
-  <div id="main">
-    <div id="canvas">
-      <script type='text/javascript' src="src/app.js"></script>
-      <script type='text/javascript' src='src/astar.js'></script>
-    </div>
-    <div class="toolbar">
-      <div id="fill-active" class="fill-inactive">
-        Fill Active
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>City Builder</title>
+    <link href="styles/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="main">
+      <div id="canvas">
+        <!-- Script required in order to make ncc output work in a browser -->
+        <script>
+          var __dirname = "",
+            module = {};
+        </script>
+        <script src="./build/index.js"></script>
       </div>
-      <div class="buttons">
-        <div class="objects">
-          <button id='road-btn' onclick="setCurrentObj('road')" class="active">Road</button>
-          <button id='grass-btn' onclick="setCurrentObj('grass')">Grass</button>
-          <button id='water-btn' onclick="setCurrentObj('water')">Water</button>
-          <button id='sand-btn' onclick="setCurrentObj('sand')">Sand</button>
-          <button id='forest-btn' onclick="setCurrentObj('forest')">Forest</button>
-          <button id='house-btn' onclick="setCurrentObj('house')">House</button>
-          <button id='farm-btn' onclick="setCurrentObj('farm')">Farm</button>
-          <button id='supermarket-btn' onclick="setCurrentObj('supermarket')">Supermarket</button>
-          <button id='fishing-btn' onclick="setCurrentObj('fishing')">Fishing Hut</button>
-          <button id='hedge-btn' onclick="setCurrentObj('hedge')">Hedge</button>
-          <button id='fence-btn' onclick="setCurrentObj('fence')">Fence</button>
-        </div>
-        <div class="tools">
-          <button id="fill-btn" onclick="toggleFill()">Fill</button>
-          <button id='neutral-btn' onclick="setCurrentObj('neutral')">Eraser</button>
-        </div>
-        <!-- <div class="settings">
+      <div class="toolbar">
+        <div id="fill-active" class="fill-inactive">Fill Active</div>
+        <div class="buttons">
+          <div class="objects">
+            <button
+              id="road-btn"
+              onclick="document.setCurrentObj('road')"
+              class="active"
+            >
+              Road
+            </button>
+            <button id="grass-btn" onclick="document.setCurrentObj('grass')">
+              Grass
+            </button>
+            <button id="water-btn" onclick="document.setCurrentObj('water')">
+              Water
+            </button>
+            <button id="sand-btn" onclick="document.setCurrentObj('sand')">
+              Sand
+            </button>
+            <button id="forest-btn" onclick="document.setCurrentObj('forest')">
+              Forest
+            </button>
+            <button id="house-btn" onclick="document.setCurrentObj('house')">
+              House
+            </button>
+            <button id="farm-btn" onclick="document.setCurrentObj('farm')">
+              Farm
+            </button>
+            <button
+              id="supermarket-btn"
+              onclick="document.setCurrentObj('supermarket')"
+            >
+              Supermarket
+            </button>
+            <button
+              id="fishing-btn"
+              onclick="document.setCurrentObj('fishing')"
+            >
+              Fishing Hut
+            </button>
+            <button id="hedge-btn" onclick="document.setCurrentObj('hedge')">
+              Hedge
+            </button>
+            <button id="fence-btn" onclick="document.setCurrentObj('fence')">
+              Fence
+            </button>
+          </div>
+          <div class="tools">
+            <button id="fill-btn" onclick="document.toggleFill()">Fill</button>
+            <button
+              id="neutral-btn"
+              onclick="document.setCurrentObj('neutral')"
+            >
+              Eraser
+            </button>
+          </div>
+          <!-- <div class="settings">
           <a id="donate-btn" target="_blank" href="https://ko-fi.com/tomdraper">Donate</a>
         </div> -->
+        </div>
       </div>
     </div>
-  </div>
-
-</body>
+  </body>
 </html>

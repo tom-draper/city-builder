@@ -1,0 +1,15 @@
+{
+  "name": "city-builder",
+  "version": "1.0.0",
+  "description": "A browser-based pixel city builder game. Build roads, housing, parks, shops, forests and farms pixel-by-pixel and watch your creation slowly come to life with an animated population.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build ./src/app.ts -w -o build/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/ncc": "^0.38.1",
+    "typescript": "^5.2.2"
+  }
+}
