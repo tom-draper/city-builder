@@ -1,110 +1,110 @@
 import { Config } from "../global.js";
 import { Graph, astar } from "./astar.js";
 import {
-  Cell,
-  cellTypeMask,
-  distance,
-  filterByDistance,
-  neighbourIs,
-  rand1toN,
-  selectRandomLocation,
-  surroundedBy,
-} from "./terrain";
+    type Cell,
+    cellTypeMask,
+    distance,
+    filterByDistance,
+    neighbourIs,
+    rand1toN,
+    selectRandomLocation,
+    surroundedBy,
+} from "./canvas";
 
 function fishingLocations(
-  grid: Cell[][],
-  w: number,
-  h: number,
-  currentX: number,
-  currentY: number
+    grid: Cell[][],
+    w: number,
+    h: number,
+    currentX: number,
+    currentY: number
 ): number[][] {
-  const locations = [];
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      if (
-        grid[y][x].type === "water" &&
-        surroundedBy(grid, w, h, x, y, "water") &&
-        distance(x, y, currentX, currentY) > 2
-      ) {
-        locations.push([x, y]);
-      }
+    const locations = [];
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            if (
+                grid[y][x].type === "water" &&
+                surroundedBy(grid, w, h, x, y, "water") &&
+                distance(x, y, currentX, currentY) > 2
+            ) {
+                locations.push([x, y]);
+            }
+        }
     }
-  }
-  return locations;
+    return locations;
 }
 
 function boatSpawnLocations(grid: Cell[][], w: number, h: number): number[][] {
-  const locations = [];
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      if (
-        grid[y][x].type === "water" &&
-        neighbourIs(grid, w, h, x, y, "fishing")
-      ) {
-        locations.push([x, y]);
-      }
+    const locations = [];
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            if (
+                grid[y][x].type === "water" &&
+                neighbourIs(grid, w, h, x, y, "fishing")
+            ) {
+                locations.push([x, y]);
+            }
+        }
     }
-  }
-  return locations;
+    return locations;
 }
 
 type Boat = {
-  div: HTMLDivElement;
-  spawnX: number;
-  spawnY: number;
+    div: HTMLDivElement;
+    spawnX: number;
+    spawnY: number;
 };
 
 function createBoat(x: number, y: number): Boat {
-  const boat: Boat = {
-    div: document.createElement("div"),
-    spawnX: x,
-    spawnY: y,
-  };
-  boat.div.className = "boat";
-  boat.div.style.left = x * 8 + "px";
-  boat.div.style.top = y * 8 + "px";
+    const boat: Boat = {
+        div: document.createElement("div"),
+        spawnX: x,
+        spawnY: y,
+    };
+    boat.div.className = "boat";
+    boat.div.style.left = x * 8 + "px";
+    boat.div.style.top = y * 8 + "px";
 
-  document.getElementById("canvas")?.appendChild(boat.div);
-  return boat;
+    document.getElementById("canvas")?.appendChild(boat.div);
+    return boat;
 }
 
 function boatPosition(boat: Boat): number[] {
-  // Remove 'px' and convert to int
-  const x = parseInt(boat.div.style.left.slice(0, -2)) / 8;
-  const y = parseInt(boat.div.style.top.slice(0, -2)) / 8;
-  return [x, y];
+    // Remove 'px' and convert to int
+    const x = parseInt(boat.div.style.left.slice(0, -2)) / 8;
+    const y = parseInt(boat.div.style.top.slice(0, -2)) / 8;
+    return [x, y];
 }
 
 function nextFishingLocation(grid: Cell[][], w: number, h: number, boat: Boat) {
-  const [sx, sy] = boatPosition(boat); // Current boat location
+    const [sx, sy] = boatPosition(boat); // Current boat location
 
-  const graph = new Graph(cellTypeMask(grid, w, h, "water"));
-  const start = graph.grid[sx][sy];
+    const graph = new Graph(cellTypeMask(grid, w, h, "water"));
+    const start = graph.grid[sx][sy];
 
-  if (0.8 >= Math.random()) {
-    // Find a new fishing location and move to it
-    const finishLocations = fishingLocations(grid, w, h, sx, sy);
-    const [fx, fy] = selectRandomLocation(
-      filterByDistance(sx, sy, finishLocations, 2)
-    );
+    if (0.8 >= Math.random()) {
+        // Find a new fishing location and move to it
+        const finishLocations = fishingLocations(grid, w, h, sx, sy);
+        const [fx, fy] = selectRandomLocation(
+            filterByDistance(sx, sy, finishLocations, 2)
+        );
 
-    if (fx != null && fy != null) {
-      const finish = graph.grid[fx][fy];
-      const path = astar.search(graph, start, finish);
-      if (path.length > 0) {
-        // If found a path that the boat can take
-        sail(grid, w, h, boat, 1, path, false);
-      }
+        if (fx != null && fy != null) {
+            const finish = graph.grid[fx][fy];
+            const path = astar.search(graph, start, finish);
+            if (path.length > 0) {
+                // If found a path that the boat can take
+                sail(grid, w, h, boat, 1, path, false);
+            }
+        }
+    } else {
+        // Return home
+        const finish = graph.grid[boat.spawnX][boat.spawnY];
+        const path = astar.search(graph, start, finish);
+        if (path.length > 0) {
+            // If found a path that the boat can take
+            sail(grid, w, h, boat, 1, path, true);
+        }
     }
-  } else {
-    // Return home
-    const finish = graph.grid[boat.spawnX][boat.spawnY];
-    const path = astar.search(graph, start, finish);
-    if (path.length > 0) {
-      // If found a path that the boat can take
-      sail(grid, w, h, boat, 1, path, true);
-    }
-  }
 }
 
 /*
@@ -115,31 +115,31 @@ function nextFishingLocation(grid: Cell[][], w: number, h: number, boat: Boat) {
  * despawning.
  */
 function sail(
-  grid: Cell[][],
-  w: number,
-  h: number,
-  boat: Boat,
-  step: number,
-  path: any[],
-  destroyBoat: boolean
+    grid: Cell[][],
+    w: number,
+    h: number,
+    boat: Boat,
+    step: number,
+    path: any[],
+    destroyBoat: boolean
 ) {
-  if (step < path.length) {
-    boat.div.style.left = path[step].x * 8 + "px";
-    boat.div.style.top = path[step].y * 8 + "px";
+    if (step < path.length) {
+        boat.div.style.left = path[step].x * 8 + "px";
+        boat.div.style.top = path[step].y * 8 + "px";
 
-    setTimeout(function () {
-      sail(grid, w, h, boat, step + 1, path, destroyBoat);
-    }, 1200);
-  } else {
-    if (destroyBoat) {
-      document.getElementById("canvas")?.removeChild(boat.div);
+        setTimeout(function () {
+            sail(grid, w, h, boat, step + 1, path, destroyBoat);
+        }, 1200);
     } else {
-      const fishingTime = rand1toN(500) * 1000;
-      setTimeout(function () {
-        nextFishingLocation(grid, w, h, boat);
-      }, fishingTime);
+        if (destroyBoat) {
+            document.getElementById("canvas")?.removeChild(boat.div);
+        } else {
+            const fishingTime = rand1toN(500) * 1000;
+            setTimeout(function () {
+                nextFishingLocation(grid, w, h, boat);
+            }, fishingTime);
+        }
     }
-  }
 }
 
 /*
@@ -157,40 +157,40 @@ function sail(
  * or returning home and removed from the map.
  */
 export function tryGoFishing(grid: Cell[][], config: Config) {
-  const startLocations = boatSpawnLocations(grid, config.w, config.h);
+    const startLocations = boatSpawnLocations(grid, config.w, config.h);
 
-  const p = Math.min(startLocations.length * 0.01, 1);
-  if (p >= Math.random()) {
-    const [sx, sy] = selectRandomLocation(startLocations);
+    const p = Math.min(startLocations.length * 0.01, 1);
+    if (p >= Math.random()) {
+        const [sx, sy] = selectRandomLocation(startLocations);
 
-    if (sx != null && sy != null) {
-      const finishLocations = fishingLocations(
-        grid,
-        config.w,
-        config.h,
-        sx,
-        sy
-      );
-      const [fx, fy] = selectRandomLocation(
-        filterByDistance(sx, sy, finishLocations, 2)
-      );
+        if (sx != null && sy != null) {
+            const finishLocations = fishingLocations(
+                grid,
+                config.w,
+                config.h,
+                sx,
+                sy
+            );
+            const [fx, fy] = selectRandomLocation(
+                filterByDistance(sx, sy, finishLocations, 2)
+            );
 
-      if (fx != null && fy != null) {
-        let graph = new Graph(cellTypeMask(grid, config.w, config.h, "water"));
-        const start = graph.grid[sx][sy];
-        const finish = graph.grid[fx][fy];
-        const path = astar.search(graph, start, finish);
-        if (path.length > 0) {
-          console.log("Spawning fishing boat");
-          // If found a path that the boat can take
-          const boat = createBoat(sx, sy);
-          sail(grid, config.w, config.h, boat, 1, path, false);
+            if (fx != null && fy != null) {
+                let graph = new Graph(cellTypeMask(grid, config.w, config.h, "water"));
+                const start = graph.grid[sx][sy];
+                const finish = graph.grid[fx][fy];
+                const path = astar.search(graph, start, finish);
+                if (path.length > 0) {
+                    console.log("Spawning fishing boat");
+                    // If found a path that the boat can take
+                    const boat = createBoat(sx, sy);
+                    sail(grid, config.w, config.h, boat, 1, path, false);
+                }
+            }
         }
-      }
     }
-  }
 
-  setTimeout(() => {
-    tryGoFishing(grid, config);
-  }, 2000);
+    setTimeout(() => {
+        tryGoFishing(grid, config);
+    }, 2000);
 }
