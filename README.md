@@ -6,7 +6,10 @@ Hosted at: https://tom-draper.github.io/city-builder/
 
 ---
 
-To run locally, run <code>npm install</code> to install dependencies, then <code>npm run build</code> to compile, then open <code>index.html</code> in a browser.
+To run locally, run:
+1. <code>npm install</code> to install dependencies,
+2. then <code>npm run build</code> to compile,
+3. then open <code>index.html</code> in a browser.
 
 ### Features
 - [X] Travelling cars
